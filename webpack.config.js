@@ -187,6 +187,8 @@ Encore.enablePostCssLoader()
 //   useJsx: false
 // })
 
+Encore.enableStimulusBridge('./resources/controllers.json');
+
 /*
 |--------------------------------------------------------------------------
 | Configure logging
