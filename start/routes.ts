@@ -29,13 +29,13 @@ Route.get('/login', async ({ view }) => {
 })
 
 Route.post('/login', async ({ auth, request, response }) => {
-  const email = request.input('email')
-  const password = request.input('password')
+  const email = request.input('email');
+  const password = request.input('password');
 
   try {
     await auth
       .use('web')
-      .attempt(email, password)
+      .attempt(email, password);
 
     return response
       .status(200)
@@ -43,6 +43,9 @@ Route.post('/login', async ({ auth, request, response }) => {
         message: 'You\'re now logged in'
       });
   } catch {
-    return response.badRequest('Invalid credentials')
+    return response
+      .badRequest({
+        message: 'Invalid credentials'
+      });
   }
 })

@@ -1,17 +1,30 @@
 import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default class extends Controller {
     async handleLogin(e) {
         e.preventDefault();
 
-        let res = await this.post('/login', {
-            username: $(e.target).find('[name="username"]').val(),
-            password: $(e.target).find('[name="password"]').val()
-        });
+        const username = $(e.target).find('[name="username"]').val();
+        const password = $(e.target).find('[name="password"]').val();
 
-        console.log(res);
+        try {
+            let res = await this.post('/login', {
+                username,
+                password
+            });
+    
+            location.href = '/app'
+        } catch (error) {
+            Swal.fire({
+                title: error.response.statusText,
+                text: error.response.data.message,
+                icon: 'error',
+                timer: 3000
+            });
+        }
     }
 
     post(url, data) {
