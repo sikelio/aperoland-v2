@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@adonisjs/assembler": "^5.9.6",
+    "@adonisjs/auth": "^8.2.3",
     "@babel/core": "^7.17.0",
     "@babel/preset-env": "^7.16.0",
     "@hotwired/stimulus": "^3.2.2",

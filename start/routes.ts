@@ -28,6 +28,21 @@ Route.get('/login', async ({ view }) => {
   return view.render('login')
 })
 
-Route.post('/login', async () => {
-  return { message: 1 }
+Route.post('/login', async ({ auth, request, response }) => {
+  const email = request.input('email')
+  const password = request.input('password')
+
+  try {
+    await auth
+      .use('web')
+      .attempt(email, password)
+
+    return response
+      .status(200)
+      .send({
+        message: 'You\'re now logged in'
+      });
+  } catch {
+    return response.badRequest('Invalid credentials')
+  }
 })
