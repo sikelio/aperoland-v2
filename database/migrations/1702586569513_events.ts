@@ -1,26 +1,34 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'users'
+  protected tableName = 'events'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table
-        .increments('user_id')
+        .increments('event_id')
         .primary()
 
       table
-        .string('username', 255)
+        .integer('creator_id')
+        .unsigned()
         .notNullable()
-        .unique()
 
       table
-        .string('email', 100)
+        .string('event_name', 255)
         .notNullable()
-        .unique()
 
       table
-        .string('password', 255)
+        .text('description')
+        .nullable()
+
+      table
+        .dateTime('start_datetime')
+        .notNullable()
+
+      table
+        .dateTime('end_datetime')
+        .notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
@@ -30,6 +38,12 @@ export default class extends BaseSchema {
 
       table
         .timestamp('updated_at', { useTz: true })
+
+      table
+        .foreign('creator_id')
+        .references('user_id')
+        .inTable('users')
+        .onDelete('CASCADE')
     })
   }
 
