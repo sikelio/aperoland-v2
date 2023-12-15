@@ -5,7 +5,7 @@ import User from 'App/Models/User';
 
 export default class AuthController {
   getLogin({ view }: HttpContextContract) {
-    return view.render('login')
+    return view.render('auth/login')
   }
 
   async postLogin({ auth, request, response }: HttpContextContract) {
@@ -26,7 +26,7 @@ export default class AuthController {
   }
 
 	getRegister({ view }: HttpContextContract) {
-		return view.render('register');
+		return view.render('auth/register');
 	}
 
   async postRegister({ request, auth, response }: HttpContextContract) {
