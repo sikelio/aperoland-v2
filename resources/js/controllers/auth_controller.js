@@ -41,13 +41,12 @@ export default class extends Controller {
                 password
             });
 
-            location.href = '/app';
+            location.href = '/auth/register';
         } catch (error) {
             Swal.fire({
-                title: error.response.statusText,
-                text: error.response.data.message,
-                icon: 'error',
-                // timer: 3000
+                title: error.response.data.message,
+                text: error.response.data.reasons.join(', '),
+                icon: 'error'
             });
         }
     }

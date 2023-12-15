@@ -2,6 +2,11 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import User from 'App/Models/User';
 
+interface IValidationRule {
+  rule: string,
+  field: string,
+  message: string
+}
 
 export default class AuthController {
   getLogin({ view }: HttpContextContract) {
@@ -47,12 +52,33 @@ export default class AuthController {
         success: true,
       });
     } catch (error) {
-      console.error(error);
-      
-      return response.status(500).send({
-        message: 'Something went wrong!',
+      let reasons: string[] = [];
+
+      error.messages.errors.forEach((error: IValidationRule) => {
+        if (error.rule === 'unique' && error.message === 'unique validation failure') {
+          switch (error.field) {
+            case 'email':
+              reasons.push('Email is already used')
+              break;
+            case 'username':
+              reasons.push('Username is already used')
+              break;
+          }
+        }
+
+        if (error.rule === 'minLength' && error.message === 'minLength validation failed') {
+          switch (error.field) {
+            case 'password':
+              reasons.push('Password is too short')
+              break;
+          }
+        }
+      });
+
+      return response.status(400).send({
+        message: 'Validation error!',
         success: false,
-        reasons: error.messages
+        reasons: reasons
       })
     }
   }
