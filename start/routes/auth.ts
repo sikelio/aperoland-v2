@@ -1,24 +1,11 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.get('/login', async ({ view }) => {
-    return view.render('login');
-  });
+  Route.get('/login', 'AuthController.getLogin');
 
-  Route.post('/login', async ({ auth, request, response }) => {
-    const email = request.input('email');
-    const password = request.input('password');
+  Route.post('/login', 'AuthController.postLogin');
 
-    try {
-      await auth.use('web').attempt(email, password);
+  Route.get('/register', 'AuthController.getRegister');
 
-      return response.status(200).send({
-        message: "You're now logged in",
-      });
-    } catch {
-      return response.badRequest({
-        message: 'Invalid credentials',
-      });
-    }
-  })
+  Route.post('/register', 'AuthController.postRegister');
 }).prefix('/auth');

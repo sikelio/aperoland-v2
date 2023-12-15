@@ -22,6 +22,10 @@ export default class extends BaseSchema {
       table
         .string('password', 255)
 
+      table
+        .string('remember_me_token')
+        .nullable()
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
