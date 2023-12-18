@@ -1,16 +1,16 @@
-import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { DateTime } from 'luxon';
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 
 import User from './User';
 
 export default class Event extends BaseModel {
   @column({ columnName: 'id_event', isPrimary: true })
-  public id: number
+  public id: number;
 
   @belongsTo(() => User, {
-    foreignKey: 'creator_id'
+    foreignKey: 'creator_id',
   })
-  public creator: BelongsTo<typeof User>
+  public creator: BelongsTo<typeof User>;
 
   @column({ columnName: 'creator_id' })
   public creatorId: number;
@@ -28,8 +28,8 @@ export default class Event extends BaseModel {
   public endDateTime: DateTime;
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public createdAt: DateTime;
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  public updatedAt: DateTime;
 }

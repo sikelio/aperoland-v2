@@ -1,6 +1,15 @@
-import Hash from '@ioc:Adonis/Core/Hash'
+import Hash from '@ioc:Adonis/Core/Hash';
 import { DateTime } from 'luxon';
-import { BaseModel, BelongsTo, HasMany, beforeSave, belongsTo, column, computed, hasMany } from '@ioc:Adonis/Lucid/Orm';
+import {
+  BaseModel,
+  BelongsTo,
+  HasMany,
+  beforeSave,
+  belongsTo,
+  column,
+  computed,
+  hasMany,
+} from '@ioc:Adonis/Lucid/Orm';
 
 import Event from './Event';
 import Role from './Role';
@@ -10,13 +19,13 @@ export default class User extends BaseModel {
   public static table = 'users';
 
   @column({ columnName: 'user_id', isPrimary: true })
-  public id: number
+  public id: number;
 
   @column({ columnName: 'role_id' })
-  public roleId: number
+  public roleId: number;
 
   @hasMany(() => Event)
-  public events: HasMany<typeof Event>
+  public events: HasMany<typeof Event>;
 
   @column({ columnName: 'username' })
   public username: string;
@@ -28,18 +37,18 @@ export default class User extends BaseModel {
   public password: string;
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public createdAt: DateTime;
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  public updatedAt: DateTime;
 
   @computed()
   public get isAdmin() {
-    return this.roleId === Roles.ADMIN
+    return this.roleId === Roles.ADMIN;
   }
 
   @belongsTo(() => Role)
-  public role: BelongsTo<typeof Role>
+  public role: BelongsTo<typeof Role>;
 
   @beforeSave()
   public static async hashPassword(user: User) {

@@ -5,7 +5,7 @@
  * file.
  */
 
-import { ShieldConfig } from '@ioc:Adonis/Addons/Shield'
+import { ShieldConfig } from '@ioc:Adonis/Addons/Shield';
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +55,7 @@ export const csp: ShieldConfig['csp'] = {
   |
   */
   reportOnly: false,
-}
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -118,7 +118,7 @@ export const csrf: ShieldConfig['csrf'] = {
   |
   */
   methods: ['POST', 'PUT', 'PATCH', 'DELETE'],
-}
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -152,7 +152,7 @@ export const dnsPrefetch: ShieldConfig['dnsPrefetch'] = {
   |
   */
   allow: true,
-}
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -171,7 +171,7 @@ export const dnsPrefetch: ShieldConfig['dnsPrefetch'] = {
 export const xFrame: ShieldConfig['xFrame'] = {
   enabled: true,
   action: 'DENY',
-}
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -217,7 +217,7 @@ export const hsts: ShieldConfig['hsts'] = {
   |
   */
   preload: false,
-}
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -233,4 +233,4 @@ export const hsts: ShieldConfig['hsts'] = {
 */
 export const contentTypeSniffing: ShieldConfig['contentTypeSniffing'] = {
   enabled: true,
-}
+};

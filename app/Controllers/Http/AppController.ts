@@ -1,7 +1,7 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 
 export default class AppController {
   getHome({ view }: HttpContextContract) {
-    return view.render('app/home')
+    return view.render('app/home');
   }
 }
