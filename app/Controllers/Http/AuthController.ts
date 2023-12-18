@@ -35,20 +35,27 @@ export default class AuthController {
 	}
 
   async postRegister({ request, auth, response }: HttpContextContract) {
-    try {
-      const userSchema = schema.create({
-        username: schema.string({ trim: true }, [rules.unique({ table: 'users', column: 'username', caseInsensitive: true })]),
-        email: schema.string({ trim: true }, [rules.email(), rules.unique({ table: 'users', column: 'email', caseInsensitive: true })]),
-        password: schema.string({}, [rules.minLength(8)])
+    if (request.input('confirmPassword') !== request.input('password')) {
+      return response.status(400).send({
+        message: 'Les mots de passe ne correspondent pas',
+        success: false
       });
+    }
 
+    const userSchema = schema.create({
+      username: schema.string({ trim: true }, [rules.unique({ table: 'users', column: 'username', caseInsensitive: true })]),
+      email: schema.string({ trim: true }, [rules.email(), rules.unique({ table: 'users', column: 'email', caseInsensitive: true })]),
+      password: schema.string({}, [rules.minLength(8)])
+    });
+
+    try {
       const data = await request.validate({ schema: userSchema });
       const user = await User.create(data);
 
       await auth.login(user);
 
       return response.send({
-        message: 'You\'re now connected! Redirecting...',
+        message: 'Vous êtes maintenant connecté ! Redirection en cours...',
         success: true,
       });
     } catch (error) {
@@ -58,10 +65,10 @@ export default class AuthController {
         if (error.rule === 'unique' && error.message === 'unique validation failure') {
           switch (error.field) {
             case 'email':
-              reasons.push('Email is already used')
+              reasons.push('L\'adresse mail est déjà utilisée')
               break;
             case 'username':
-              reasons.push('Username is already used')
+              reasons.push('Le pseudo est déjà utilisé')
               break;
           }
         }
@@ -69,7 +76,7 @@ export default class AuthController {
         if (error.rule === 'minLength' && error.message === 'minLength validation failed') {
           switch (error.field) {
             case 'password':
-              reasons.push('Password is too short')
+              reasons.push('Le mot de passe est trop court (8 caractères min.)')
               break;
           }
         }

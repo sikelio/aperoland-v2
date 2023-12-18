@@ -21,8 +21,7 @@ export default class extends Controller {
             Swal.fire({
                 title: error.response.statusText,
                 text: error.response.data.message,
-                icon: 'error',
-                timer: 3000
+                icon: 'error'
             });
         }
     }
@@ -33,6 +32,15 @@ export default class extends Controller {
         const username = $(e.target).find('[name="username"]').val();
         const email = $(e.target).find('[name="email"]').val();
         const password = $(e.target).find('[name="password"]').val();
+        const confirmPassword = $(e.target).find('[name="confirmPassword"]').val();
+
+        if (password !== confirmPassword) {
+            return Swal.fire({
+                title: 'Vérification requise',
+                text: 'Les mots de passe ne correspondent pas',
+                icon: 'warning'
+            });
+        }
 
         try {
             await this.post('/auth/register', {

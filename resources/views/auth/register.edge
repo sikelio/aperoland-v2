@@ -44,22 +44,22 @@
         <form class="space-y-5" data-action="submit->auth#handleRegister">
           <div>
             <label class="font-medium text-appBlueDark">Pseudo</label>
-            <input type="text" required class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
+            <input type="text" required name="username" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
           </div>
 
           <div>
             <label class="font-medium text-appBlueDark">Adresse mail</label>
-            <input type="email" required class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
+            <input type="email" required name="email" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
           </div>
 
           <div>
             <label class="font-medium text-appBlueDark">Mot de passe</label>
-            <input type="password" required class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
+            <input type="password" required name="password" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
           </div>
 
           <div>
             <label class="font-medium text-appBlueDark">Confirmation mot de passe</label>
-            <input type="password" required class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
+            <input type="password" required name="confirmPassword" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
           </div>
 
           <button class="w-full px-4 py-2 text-white font-medium bg-appBlueDark hover:bg-appBlueDarkLight active:bg-appBlueDark rounded-lg duration-150" >
