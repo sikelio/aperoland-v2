@@ -8,4 +8,6 @@ Route.group(() => {
   Route.get('/register', 'AuthController.getRegister');
 
   Route.post('/register', 'AuthController.postRegister');
-}).prefix('/auth');
+})
+  .prefix('/auth')
+  .middleware('redirectIfAuthenticated');
