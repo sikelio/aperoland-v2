@@ -14,11 +14,11 @@ export default class AuthController {
   }
 
   async postLogin({ auth, request, response }: HttpContextContract) {
-    const email = request.input('email')
+    const uid = request.input('uid')
     const password = request.input('password')
 
     try {
-      await auth.use('web').attempt(email, password)
+      await auth.use('web').attempt(uid, password)
 
       return response.status(200).send({
         message: "You're now logged in",
@@ -88,5 +88,16 @@ export default class AuthController {
         reasons: reasons
       })
     }
+  }
+
+  public async logout({ auth, response }: HttpContextContract) {
+    await auth.logout()
+
+    return response
+      .status(200)
+      .send({
+        messsage: 'Vous êtes à présent déconnecté',
+        success: true
+      })
   }
 }

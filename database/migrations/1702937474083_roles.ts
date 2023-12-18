@@ -1,30 +1,17 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import Roles from 'App/Enums/Roles'
 
 export default class extends BaseSchema {
-  protected tableName = 'users'
+  protected tableName = 'roles'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table
-        .increments('user_id')
-        .primary()
+        .increments('role_id')
 
       table
-        .string('username', 255)
+        .string('name', 50)
         .notNullable()
-        .unique()
-
-      table
-        .string('email', 100)
-        .notNullable()
-        .unique()
-
-      table
-        .string('password', 255)
-
-      table
-        .string('remember_me_token')
-        .nullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
@@ -34,6 +21,17 @@ export default class extends BaseSchema {
 
       table
         .timestamp('updated_at', { useTz: true })
+    })
+
+    this.defer(async (db) => {
+      await db.table(this.tableName)
+        .multiInsert([{
+          role_id: Roles.ADMIN,
+          name: 'Admin'
+        }, {
+          role_id: Roles.USER,
+          name: 'User'
+        }])
     })
   }
 
