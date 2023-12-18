@@ -1,0 +1,13 @@
+@layout('layouts/main')
+@set('title', 'Login')
+
+@section('body')
+  <div data-controller="auth">
+    <form data-action="submit->auth#handleLogin">
+      <input type="text" id="uid" name="uid" placeholder="Username or Email" />
+      <input type="password" id="password" name="password" placeholder="Password" />
+
+      <input type="submit" value="submit" />
+    </form>
+  </div>
+@end

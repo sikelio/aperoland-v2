@@ -169,7 +169,7 @@ Encore.configureDevServerOptions((options) => {
 | PostCSS or CSS.
 |
 */
-// Encore.enablePostCssLoader()
+Encore.enablePostCssLoader()
 // Encore.configureCssLoader(() => {})
 
 /*
@@ -186,6 +186,8 @@ Encore.configureDevServerOptions((options) => {
 //   runtimeCompilerBuild: false,
 //   useJsx: false
 // })
+
+Encore.enableStimulusBridge('./resources/controllers.json');
 
 /*
 |--------------------------------------------------------------------------
