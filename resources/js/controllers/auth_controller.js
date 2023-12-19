@@ -16,7 +16,7 @@ export default class extends Controller {
         password,
       });
 
-      location.href = '/app';
+      location.href = '/app/home';
     } catch (error) {
       Swal.fire({
         title: error.response.statusText,
