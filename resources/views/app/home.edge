@@ -2,9 +2,5 @@
 @set('title', 'Accueil')
 
 @section('body')
-	@if(auth.user.isAdmin)
-	  	Hello admin with mail {{ auth.user.email }}
-	@else
-		Hello user with email {{ auth.user.email }}
-	@end
+	@include('partials/navbar')
 @end
