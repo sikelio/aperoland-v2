@@ -2,10 +2,20 @@ import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
 import Swal from 'sweetalert2';
 import RequestHandler from '../lib/RequestHandler';
+import CustomSweetAlert from '../lib/CustomSweetAlert';
 
 export default class extends Controller {
   async handleLogin(e) {
     e.preventDefault();
+
+    if (localStorage.getItem('cookieConsent') === 'declined' || !localStorage.getItem('cookieConsent')) {
+      CustomSweetAlert.Toast.fire({
+        icon: 'warning',
+        text: 'Veuillez accepter les cookies afin de pouvoir vous connecter !'
+      });
+
+      return $('#cookieConsentPopup').show();
+    }
 
     const username = $(e.target).find('[name="uid"]').val();
     const password = $(e.target).find('[name="password"]').val();
@@ -28,6 +38,15 @@ export default class extends Controller {
 
   async handleRegister(e) {
     e.preventDefault();
+
+    if (localStorage.getItem('cookieConsent') === 'declined' || !localStorage.getItem('cookieConsent')) {
+      CustomSweetAlert.Toast.fire({
+        icon: 'warning',
+        text: 'Veuillez accepter les cookies afin de pouvoir vous inscrire !'
+      });
+
+      return $('#cookieConsentPopup').show();
+    }
 
     const username = $(e.target).find('[name="username"]').val();
     const email = $(e.target).find('[name="email"]').val();
