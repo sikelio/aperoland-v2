@@ -1,0 +1,41 @@
+@layout('layouts/app')
+@set('title', 'Accueil')
+
+@section('body')
+	<div data-controller="app">
+		<form class="space-y-5 px-12 pt-12" data-action="submit->app#handleNewEvent">
+			<div>
+				<label class="font-bold text-white">
+					Nom de l'apéro
+					<span class="text-red-600">*</span>
+				</label>
+				<input type="text" required name="eventName" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+			</div>
+	
+			<div>
+				<label class="font-bold text-white">Description</label>
+				<textarea name="description" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white"></textarea>
+			</div>
+	
+			<div>
+				<label class="font-bold text-white">
+					Début
+					<span class="text-red-600">*</span>
+				</label>
+				<input type="datetime-local" required name="startDateTime" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+			</div>
+	
+			<div>
+				<label class="font-bold text-white">
+					Fin
+					<span class="text-red-600">*</span>
+				</label>
+				<input type="datetime-local" required name="endDateTime" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+			</div>
+	
+			<button class="w-full px-4 py-2 text-white font-medium bg-appBlueDark hover:bg-appBlueDarkLight active:bg-appBlueDark rounded-lg duration-150" >
+				Créer mon Apéro
+			</button>
+		</form>
+	</div>
+@end

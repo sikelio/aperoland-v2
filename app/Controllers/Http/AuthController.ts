@@ -2,11 +2,9 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import User from 'App/Models/User';
 
-interface IValidationRule {
-  rule: string;
-  field: string;
-  message: string;
-}
+import IValidationRule from 'App/Interfaces/IValidationRule';
+import ValidationRules from 'App/Enums/ValidationRules';
+import ValidationMessages from 'App/Enums/ValidationMessages';
 
 export default class AuthController {
   getLogin({ view }: HttpContextContract) {
@@ -67,7 +65,7 @@ export default class AuthController {
       let reasons: string[] = [];
 
       error.messages.errors.forEach((error: IValidationRule) => {
-        if (error.rule === 'unique' && error.message === 'unique validation failure') {
+        if (error.rule === ValidationRules.UNIQUE && error.message === ValidationMessages.UNIQUE) {
           switch (error.field) {
             case 'email':
               reasons.push("L'adresse mail est déjà utilisée");
@@ -78,7 +76,7 @@ export default class AuthController {
           }
         }
 
-        if (error.rule === 'minLength' && error.message === 'minLength validation failed') {
+        if (error.rule === ValidationRules.MIN_LENGTH && error.message === ValidationMessages.MAX_LENGTH) {
           switch (error.field) {
             case 'password':
               reasons.push('Le mot de passe est trop court (8 caractères min.)');

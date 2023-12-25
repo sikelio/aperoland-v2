@@ -13,7 +13,9 @@
     @include('partials/navbar')
 
 	<main class="bg-gray-900 home-background p-5">
-        @!section('body')
+        <div class="z-10 relative">
+            @!section('body')
+        </div>
 
 		<div class="fixed inset-0 my-auto h-[500px] app-background-gradient"></div>
 	</main>

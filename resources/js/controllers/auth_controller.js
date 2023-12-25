@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
-import axios from 'axios';
 import Swal from 'sweetalert2';
+import RequestHandler from '../lib/RequestHandler';
 
 export default class extends Controller {
   async handleLogin(e) {
@@ -11,7 +11,7 @@ export default class extends Controller {
     const password = $(e.target).find('[name="password"]').val();
 
     try {
-      await this.post('/auth/login', {
+      await RequestHandler.post('/auth/login', {
         uid: username,
         password,
       });
@@ -43,7 +43,7 @@ export default class extends Controller {
     }
 
     try {
-      await this.post('/auth/register', {
+      await RequestHandler.post('/auth/register', {
         username,
         email,
         password,
@@ -54,13 +54,9 @@ export default class extends Controller {
     } catch (error) {
       Swal.fire({
         title: error.response.data.message,
-        text: error.response.data.reasons.join(', '),
+        html: RequestHandler.errorHandler(error.response.data.reasons),
         icon: 'error',
       });
     }
-  }
-
-  post(url, data) {
-    return axios.post(url, data);
   }
 }
