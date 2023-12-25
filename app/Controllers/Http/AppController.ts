@@ -17,7 +17,8 @@ export default class AppController {
     user.events.forEach(event => event.setTempUserId(user.id));
 
     return view.render('app/home', {
-      events: user.events
+      events: user.events,
+      hasEvents: user.events.length > 0
     });
   }
 

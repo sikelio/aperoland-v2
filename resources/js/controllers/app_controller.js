@@ -29,4 +29,8 @@ export default class extends Controller {
       });
     }
   }
+
+  joinEvent(e) {
+    e.preventDefault();
+  }
 }
