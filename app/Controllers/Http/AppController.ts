@@ -21,6 +21,9 @@ export default class AppController {
         rules.maxLength(255),
         rules.minLength(5)
       ]),
+      description: schema.string.optional({ trim: true }, [
+        rules.maxLength(1000)
+      ]),
       startDateTime: schema.date({}, []),
       endDateTime: schema.date({}, [])
     });
@@ -44,6 +47,9 @@ export default class AppController {
           switch (error.field) {
             case 'eventName':
               reasons.push('Le nom de l\'Apéro est trop long (255 caractères max.)');
+              break;
+            case 'description':
+              reasons.push('La description de l\'Apéro est trop longue (1000 caractères max)');
               break;
           }
         }
