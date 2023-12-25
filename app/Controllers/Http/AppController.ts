@@ -16,6 +16,14 @@ export default class AppController {
   }
 
   public async postAddEvent({ request, response, auth }: HttpContextContract) {
+    if (new Date(request.input('startDateTime')) >= new Date(request.input('endDateTime'))) {
+      return response.status(400).send({
+        message: 'Erreur de saisie !',
+        success: false,
+        reasons: ['Vous ne pouvez pas créer d\'Apéro avec une date de début supérieure à la date de fin !'],
+      });
+    }
+
     const eventSchema = schema.create({
       eventName: schema.string({ trim: true }, [rules.maxLength(255), rules.minLength(5)]),
       description: schema.string.optional({ trim: true }, [rules.maxLength(1000)]),
@@ -82,12 +90,25 @@ export default class AppController {
               break;
           }
         }
+
+        if (
+          error.rule === ValidationRules.DATE_FORMAT
+        ) {
+          switch (error.field) {
+            case 'startDateTime':
+              reasons.push("La date de début de l'Apéro n'est pas dans un format reconnus");
+              break;
+            case 'endDateTime':
+              reasons.push("La date de fin de l'Apéro n'est pas dans un format reconnus");
+              break;
+          }
+        }
       });
 
       return response.status(400).send({
         message: 'Erreur de saisie !',
         success: false,
-        reasons: reasons,
+        reasons: reasons
       });
     }
   }
