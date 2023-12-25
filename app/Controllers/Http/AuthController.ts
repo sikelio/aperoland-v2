@@ -2,16 +2,16 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import User from 'App/Models/User';
 
-import IValidationRule from 'App/Interfaces/IValidationRule';
+import ValidationRule from 'App/Interfaces/ValidationRule';
 import ValidationRules from 'App/Enums/ValidationRules';
 import ValidationMessages from 'App/Enums/ValidationMessages';
 
 export default class AuthController {
-  getLogin({ view }: HttpContextContract) {
+  public getLogin({ view }: HttpContextContract) {
     return view.render('auth/login');
   }
 
-  async postLogin({ auth, request, response }: HttpContextContract) {
+  public async postLogin({ auth, request, response }: HttpContextContract) {
     const uid = request.input('uid');
     const password = request.input('password');
 
@@ -28,11 +28,11 @@ export default class AuthController {
     }
   }
 
-  getRegister({ view }: HttpContextContract) {
+  public getRegister({ view }: HttpContextContract) {
     return view.render('auth/register');
   }
 
-  async postRegister({ request, auth, response }: HttpContextContract) {
+  public async postRegister({ request, auth, response }: HttpContextContract) {
     if (request.input('confirmPassword') !== request.input('password')) {
       return response.status(400).send({
         message: 'Les mots de passe ne correspondent pas',
@@ -64,7 +64,7 @@ export default class AuthController {
     } catch (error) {
       let reasons: string[] = [];
 
-      error.messages.errors.forEach((error: IValidationRule) => {
+      error.messages.errors.forEach((error: ValidationRule) => {
         if (error.rule === ValidationRules.UNIQUE && error.message === ValidationMessages.UNIQUE) {
           switch (error.field) {
             case 'email':
@@ -76,7 +76,10 @@ export default class AuthController {
           }
         }
 
-        if (error.rule === ValidationRules.MIN_LENGTH && error.message === ValidationMessages.MAX_LENGTH) {
+        if (
+          error.rule === ValidationRules.MIN_LENGTH &&
+          error.message === ValidationMessages.MAX_LENGTH
+        ) {
           switch (error.field) {
             case 'password':
               reasons.push('Le mot de passe est trop court (8 caractères min.)');
