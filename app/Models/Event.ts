@@ -22,6 +22,9 @@ export default class Event extends BaseModel {
   @column.dateTime({ columnName: 'end_datetime' })
   public endDateTime: DateTime;
 
+  @column({ columnName: 'join_code' })
+  public joinCode: string;
+
   @belongsTo(() => User, {
     foreignKey: 'creator_id',
   })

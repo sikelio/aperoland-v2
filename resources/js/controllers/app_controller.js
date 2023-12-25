@@ -2,6 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
 import Swal from 'sweetalert2';
 import RequestHandler from '../lib/RequestHandler';
+import CustomSweetAlert from '../lib/CustomSweetAlert';
 
 export default class extends Controller {
   async handleNewEvent(e) {
@@ -28,6 +29,15 @@ export default class extends Controller {
         icon: 'error',
       });
     }
+  }
+
+  copyJoinCode(e) {
+    navigator.clipboard.writeText($(e.target).text());
+
+    CustomSweetAlert.Toast.fire({
+      icon: 'success',
+      title: 'Le code d\'invitation a bien été copié !'
+    });
   }
 
   joinEvent(e) {

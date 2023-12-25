@@ -31,9 +31,10 @@ export default class extends BaseSchema {
         .dateTime('end_datetime')
         .notNullable();
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
+      table
+        .string('join_code', 18)
+        .notNullable();
+
       table
         .timestamp('created_at', { useTz: true });
 

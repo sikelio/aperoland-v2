@@ -3,7 +3,7 @@
 
 @section('body')
   @if(hasEvents)
-    <ul class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <ul data-controller="app" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       @each(event in events)
         <li class="border rounded-lg">
           <div class="flex items-start justify-between p-4">
@@ -20,6 +20,9 @@
           </div>
 
           <div class="py-5 px-4 border-t text-right">
+            <span class="text-white">Code : </span>
+            <button data-action="click->app#copyJoinCode" class="font-semibold text-white hover:text-appOrangeLight text-sm font-medium mr-5">{{ event.joinCode }}</button>
+
             <a href="/app/event/{{event.id}}" class="font-semibold text-white hover:text-appOrangeLight text-sm font-medium">Accéder</a>
           </div>
         </li>

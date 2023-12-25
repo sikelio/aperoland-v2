@@ -7,6 +7,8 @@ import ValidationRule from 'App/Interfaces/ValidationRule';
 import ValidationRules from 'App/Enums/ValidationRules';
 import ValidationMessages from 'App/Enums/ValidationMessages';
 
+import RandomGenerator from 'App/Utility/RandomGenerator';
+
 export default class AppController {
   public async getHome({ view, auth }: HttpContextContract) {
     const user = await User.findOrFail(auth.user!.id);
@@ -51,6 +53,7 @@ export default class AppController {
         description: request.input('description'),
         startDateTime: request.input('startDateTime'),
         endDateTime: request.input('endDateTime'),
+        joinCode: RandomGenerator.generateJoinCode()
       });
 
       await event.related('attendees').attach([auth.user!.id]);
