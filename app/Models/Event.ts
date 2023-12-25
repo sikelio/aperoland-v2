@@ -1,10 +1,10 @@
 import { DateTime } from 'luxon';
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, BelongsTo, ManyToMany, belongsTo, column, manyToMany } from '@ioc:Adonis/Lucid/Orm';
 
 import User from './User';
 
 export default class Event extends BaseModel {
-  @column({ columnName: 'id_event', isPrimary: true })
+  @column({ columnName: 'event_id', isPrimary: true })
   public id: number;
 
   @belongsTo(() => User, {
@@ -26,6 +26,15 @@ export default class Event extends BaseModel {
 
   @column.dateTime({ columnName: 'end_datetime' })
   public endDateTime: DateTime;
+
+  @manyToMany(() => User, {
+    pivotTable: 'attendees',
+    localKey: 'id',
+    pivotForeignKey: 'event_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'user_id',
+  })
+  public attendees: ManyToMany<typeof User>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

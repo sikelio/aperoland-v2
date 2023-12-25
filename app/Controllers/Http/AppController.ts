@@ -25,13 +25,16 @@ export default class AppController {
 
     try {
       await request.validate({ schema: eventSchema });
-      await Event.create({
+
+      const event = await Event.create({
         eventName: request.input('eventName'),
         creatorId: auth.user!.id,
         description: request.input('description'),
         startDateTime: request.input('startDateTime'),
         endDateTime: request.input('endDateTime'),
       });
+
+      await event.related('attendees').attach([auth.user!.id]);
 
       return response.send({ message: 'Apéro crée' });
     } catch (error) {
