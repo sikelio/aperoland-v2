@@ -1,14 +1,24 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Event from 'App/Models/Event';
+import User from 'App/Models/User';
 
 import ValidationRule from 'App/Interfaces/ValidationRule';
 import ValidationRules from 'App/Enums/ValidationRules';
 import ValidationMessages from 'App/Enums/ValidationMessages';
 
 export default class AppController {
-  public getHome({ view }: HttpContextContract) {
-    return view.render('app/home');
+  public async getHome({ view, auth }: HttpContextContract) {
+    const user = await User.findOrFail(auth.user!.id);
+    await user.load('events', (eventsQuery) => {
+      eventsQuery.orderBy('startDateTime', 'asc');
+    });
+
+    user.events.forEach(event => event.setTempUserId(user.id));
+
+    return view.render('app/home', {
+      events: user.events
+    });
   }
 
   public getAddEvent({ view }: HttpContextContract) {
@@ -44,7 +54,7 @@ export default class AppController {
 
       await event.related('attendees').attach([auth.user!.id]);
 
-      return response.send({ message: 'Apéro crée' });
+      return response.send({ message: 'Apéro crée', event });
     } catch (error) {
       let reasons: string[] = [];
 

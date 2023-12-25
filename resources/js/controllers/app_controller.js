@@ -13,12 +13,14 @@ export default class extends Controller {
     const endDateTime = $(e.target).find('[name="endDateTime"]').val();
 
     try {
-      await RequestHandler.post('/app/add-event', {
+      const response = await RequestHandler.post('/app/add-event', {
         eventName,
         description,
         startDateTime,
         endDateTime,
       });
+
+      location.href = `/app/event/${response.data.event.id}`;
     } catch (error) {
       Swal.fire({
         title: error.response.data.message,

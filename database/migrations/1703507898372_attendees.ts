@@ -8,13 +8,15 @@ export default class extends BaseSchema {
       table
         .integer('user_id')
         .unsigned()
-        .references('users.user_id')
+        .references('user_id')
+        .inTable('users')
         .onDelete('CASCADE');
 
       table
-        .increments('event_id')
+        .integer('event_id')
         .unsigned()
-        .references('events.event_id')
+        .references('event_id')
+        .inTable('events')
         .onDelete('CASCADE');
 
       table

@@ -1,4 +1,12 @@
 {
   "assets/app.css": "http://localhost:8080/assets/app.css",
-  "assets/app.js": "http://localhost:8080/assets/app.js"
+  "assets/app.js": "http://localhost:8080/assets/app.js",
+  "assets/fonts/fa-solid-900.ttf": "http://localhost:8080/assets/fonts/fa-solid-900.45a265d0.ttf",
+  "assets/fonts/fa-brands-400.ttf": "http://localhost:8080/assets/fonts/fa-brands-400.6205fd00.ttf",
+  "assets/fonts/fa-solid-900.woff2": "http://localhost:8080/assets/fonts/fa-solid-900.fb8184ad.woff2",
+  "assets/fonts/fa-brands-400.woff2": "http://localhost:8080/assets/fonts/fa-brands-400.8d3cabfc.woff2",
+  "assets/fonts/fa-regular-400.ttf": "http://localhost:8080/assets/fonts/fa-regular-400.adc51aab.ttf",
+  "assets/fonts/fa-regular-400.woff2": "http://localhost:8080/assets/fonts/fa-regular-400.e931bc0d.woff2",
+  "assets/fonts/fa-v4compatibility.ttf": "http://localhost:8080/assets/fonts/fa-v4compatibility.2eb7b3ef.ttf",
+  "assets/fonts/fa-v4compatibility.woff2": "http://localhost:8080/assets/fonts/fa-v4compatibility.b3049b13.woff2"
 }

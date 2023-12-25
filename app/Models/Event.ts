@@ -1,16 +1,11 @@
 import { DateTime } from 'luxon';
-import { BaseModel, BelongsTo, ManyToMany, belongsTo, column, manyToMany } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, BelongsTo, ManyToMany, belongsTo, column, computed, manyToMany } from '@ioc:Adonis/Lucid/Orm';
 
 import User from './User';
 
 export default class Event extends BaseModel {
   @column({ columnName: 'event_id', isPrimary: true })
   public id: number;
-
-  @belongsTo(() => User, {
-    foreignKey: 'creator_id',
-  })
-  public creator: BelongsTo<typeof User>;
 
   @column({ columnName: 'creator_id' })
   public creatorId: number;
@@ -27,6 +22,11 @@ export default class Event extends BaseModel {
   @column.dateTime({ columnName: 'end_datetime' })
   public endDateTime: DateTime;
 
+  @belongsTo(() => User, {
+    foreignKey: 'creator_id',
+  })
+  public creator: BelongsTo<typeof User>;
+
   @manyToMany(() => User, {
     pivotTable: 'attendees',
     localKey: 'id',
@@ -35,6 +35,17 @@ export default class Event extends BaseModel {
     pivotRelatedForeignKey: 'user_id',
   })
   public attendees: ManyToMany<typeof User>;
+
+  private tempUserId: number;
+
+  public setTempUserId(userId: number) {
+    this.tempUserId = userId;
+  }
+
+  @computed()
+  public get isCreator() {
+    return this.creatorId === this.tempUserId;
+  }
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

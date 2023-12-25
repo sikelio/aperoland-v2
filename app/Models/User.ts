@@ -3,12 +3,12 @@ import { DateTime } from 'luxon';
 import {
   BaseModel,
   BelongsTo,
-  HasMany,
+  ManyToMany,
   beforeSave,
   belongsTo,
   column,
   computed,
-  hasMany,
+  manyToMany,
 } from '@ioc:Adonis/Lucid/Orm';
 
 import Event from './Event';
@@ -23,9 +23,6 @@ export default class User extends BaseModel {
 
   @column({ columnName: 'role_id' })
   public roleId: number;
-
-  @hasMany(() => Event)
-  public events: HasMany<typeof Event>;
 
   @column({ columnName: 'username' })
   public username: string;
@@ -49,6 +46,15 @@ export default class User extends BaseModel {
 
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>;
+
+  @manyToMany(() => Event, {
+    pivotTable: 'attendees',
+    localKey: 'id',
+    pivotForeignKey: 'user_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'event_id'
+  })
+  public events: ManyToMany<typeof Event>;
 
   @beforeSave()
   public static async hashPassword(user: User) {
