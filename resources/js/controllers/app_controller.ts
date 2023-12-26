@@ -5,7 +5,7 @@ import RequestHandler from '../lib/RequestHandler';
 import CustomSweetAlert from '../lib/CustomSweetAlert';
 
 export default class extends Controller {
-  async handleNewEvent(e) {
+  async handleNewEvent(e: any) {
     e.preventDefault();
 
     const eventName = $(e.target).find('[name="eventName"]').val();
@@ -22,7 +22,7 @@ export default class extends Controller {
       });
 
       location.href = `/app/event/${response.data.event.id}`;
-    } catch (error) {
+    } catch (error: any) {
       Swal.fire({
         title: error.response.data.message,
         html: RequestHandler.errorHandler(error.response.data.reasons),
@@ -31,7 +31,7 @@ export default class extends Controller {
     }
   }
 
-  copyJoinCode(e) {
+  copyJoinCode(e: any) {
     navigator.clipboard.writeText($(e.target).text());
 
     CustomSweetAlert.Toast.fire({
@@ -40,7 +40,7 @@ export default class extends Controller {
     });
   }
 
-  joinEvent(e) {
+  joinEvent(e: any) {
     e.preventDefault();
   }
 }

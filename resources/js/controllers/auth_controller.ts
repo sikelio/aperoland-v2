@@ -5,7 +5,7 @@ import RequestHandler from '../lib/RequestHandler';
 import CustomSweetAlert from '../lib/CustomSweetAlert';
 
 export default class extends Controller {
-  async handleLogin(e) {
+  async handleLogin(e: any) {
     e.preventDefault();
 
     if (localStorage.getItem('cookieConsent') === 'declined' || !localStorage.getItem('cookieConsent')) {
@@ -27,7 +27,7 @@ export default class extends Controller {
       });
 
       location.href = '/app/home';
-    } catch (error) {
+    } catch (error: any) {
       Swal.fire({
         title: error.response.statusText,
         text: error.response.data.message,
@@ -36,7 +36,7 @@ export default class extends Controller {
     }
   }
 
-  async handleRegister(e) {
+  async handleRegister(e: any) {
     e.preventDefault();
 
     if (localStorage.getItem('cookieConsent') === 'declined' || !localStorage.getItem('cookieConsent')) {
@@ -70,7 +70,7 @@ export default class extends Controller {
       });
 
       location.href = '/app/home';
-    } catch (error) {
+    } catch (error: any) {
       Swal.fire({
         title: error.response.data.message,
         html: RequestHandler.errorHandler(error.response.data.reasons),
