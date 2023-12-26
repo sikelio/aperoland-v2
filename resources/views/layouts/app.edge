@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aperoland V2 - {{ title }}</title>
+    @entryPointStyles('app')
+    @entryPointScripts('app')
+</head>
+
+<body>
+    @include('partials/navbar')
+
+	<main class="bg-gray-900 home-background p-5">
+        <div class="z-10 relative">
+            @!section('body')
+        </div>
+
+		<div class="fixed inset-0 my-auto h-[500px] app-background-gradient"></div>
+	</main>
+</body>
+
+</html>

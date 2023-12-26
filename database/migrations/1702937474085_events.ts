@@ -1,53 +1,49 @@
-import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'events'
+  protected tableName = 'events';
 
-  public async up () {
+  public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table
         .increments('event_id')
-        .primary()
+        .primary();
 
       table
         .integer('creator_id')
         .unsigned()
-        .notNullable()
+        .references('user_id')
+        .inTable('users');
 
       table
         .string('event_name', 255)
-        .notNullable()
+        .notNullable();
 
       table
         .text('description')
-        .nullable()
+        .nullable();
 
       table
         .dateTime('start_datetime')
-        .notNullable()
+        .notNullable();
 
       table
         .dateTime('end_datetime')
-        .notNullable()
-
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
-      table
-        .timestamp('created_at', { useTz: true })
+        .notNullable();
 
       table
-        .timestamp('updated_at', { useTz: true })
+        .string('join_code', 18)
+        .notNullable();
 
       table
-        .foreign('creator_id')
-        .references('user_id')
-        .inTable('users')
-        .onDelete('CASCADE')
-    })
+        .timestamp('created_at', { useTz: true });
+
+      table
+        .timestamp('updated_at', { useTz: true });
+    });
   }
 
-  public async down () {
-    this.schema.dropTable(this.tableName)
+  public async down() {
+    this.schema.dropTable(this.tableName);
   }
 }
