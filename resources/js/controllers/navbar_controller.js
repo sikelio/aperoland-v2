@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
+import $ from 'jquery';
 import axios from 'axios';
+import CustomSweetAlert from '../lib/CustomSweetAlert';
 
 export default class extends Controller {
   static targets = ['menu', 'mobileMenu'];
@@ -7,13 +9,13 @@ export default class extends Controller {
   toggleAvatarDropdown(e) {
     e.preventDefault();
 
-    this.menuTarget.classList.toggle('hidden');
+    $(this.menuTarget).toggleClass('hidden');
   }
 
   toggleMobileAvatarDropdown(e) {
     e.preventDefault();
 
-    this.mobileMenuTarget.classList.toggle('hidden');
+    $(this.mobileMenuTarget).toggleClass('hidden');
   }
 
   async logout(e) {
@@ -24,7 +26,10 @@ export default class extends Controller {
 
       location.href = '/auth/login';
     } catch (error) {
-      console.error(error);
+      CustomSweetAlert.Toast.fire({
+        icon: 'warning',
+        text: 'Quelque chose s\'est mal passé lors de la déconnexion !'
+      });
     }
   }
 }
