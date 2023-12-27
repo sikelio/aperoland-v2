@@ -55,9 +55,10 @@ export default class extends Controller {
 
       location.href = '/app/home';
     } catch (error: any) {
-      CustomSweetAlert.Toast.fire({
+      Swal.fire({
         icon: 'error',
-        text: error.response.data.message
+        title: error.response.data.message,
+        html: RequestHandler.errorHandler(error.response.data.reasons)
       });
     }
   }

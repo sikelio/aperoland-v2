@@ -129,7 +129,7 @@ export default class AppController {
 
   public async postJoinEvent({ response, request, auth }: HttpContextContract) {
     const joinEventSchema = schema.create({
-      joinCode: schema.string({ trim: true })
+      joinCode: schema.string({ trim: true }, [])
     });
 
     try {
@@ -149,7 +149,26 @@ export default class AppController {
 
       return response.send(event);
     } catch (error: any) {
-      return response.send(error);
+      let reasons: string[] = [];
+
+      error.messages.errors.forEach((error: ValidationRule) => {
+        if (
+          error.rule === ValidationRules.REQUIRED &&
+          error.message === ValidationMessages.REQUIRED
+        ) {
+          switch (error.field) {
+            case 'joinCode':
+              reasons.push('Le code d\'Apéro est requis')
+              break;
+          }
+        }
+      });
+
+      return response.status(400).send({
+        message: 'Erreur de saisie !',
+        success: false,
+        reasons
+      });
     }
   }
 }
