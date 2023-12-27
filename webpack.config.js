@@ -148,6 +148,9 @@ Encore.configureDevServerOptions((options) => {
     directory: join(__dirname, './resources/views'),
     watch: true,
   });
+  options.static.push({
+    directory: join(__dirname, './resources/js')
+  })
 });
 
 /*

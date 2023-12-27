@@ -8,6 +8,8 @@ Route.group(() => {
   Route.post('/add-event', 'AppController.postAddEvent').as('app.add.event.post');
 
   Route.post('/join-event', 'AppController.postJoinEvent').as('app.join.event.post');
+
+  Route.get('/event/:id', 'AppController.getEvent').as('app.event.get');
 })
   .prefix('/app')
   .middleware('auth');

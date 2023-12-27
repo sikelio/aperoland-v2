@@ -171,4 +171,27 @@ export default class AppController {
       });
     }
   }
+
+  public async getEvent({ view, params, response, auth }: HttpContextContract) {
+    try {
+      const event = await Event.findOrFail(params.id);
+      await event.load('attendees');
+      event.setTempUserId(auth.user!.id);
+      event.attendees.forEach(attendee => {
+        attendee.setTempUserId(auth.user!.id);
+        attendee.setTempCreatorUserId(event.creatorId);
+      });
+
+      // return response.send(event);
+
+      return view.render('app/event', {
+        event,
+        title: event.eventName
+      })
+    } catch (error: any) {
+      response.send(error)
+
+      // response.redirect().toRoute('app.home.get');
+    }
+  }
 }

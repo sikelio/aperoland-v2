@@ -44,7 +44,7 @@ export default class extends Controller {
     e.preventDefault();
 
     const joinCode: string = $(e.target).find('[name="joinCode"]').val() as string;
-    
+
     try {
       await RequestHandler.post('/app/join-event', { joinCode });
 

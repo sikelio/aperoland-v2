@@ -56,6 +56,28 @@ export default class User extends BaseModel {
   })
   public events: ManyToMany<typeof Event>;
 
+  private tempUserId: number;
+
+  private tempCreatorUserId: number;
+
+  public setTempUserId(userId: number) {
+    this.tempUserId = userId;
+  }
+
+  public setTempCreatorUserId(userId: number) {
+    this.tempCreatorUserId = userId;
+  }
+
+  @computed()
+  public get isYou(): boolean {
+    return this.id === this.tempUserId;
+  }
+
+  @computed()
+  public get isCreator(): boolean {
+    return this.id === this.tempCreatorUserId;
+  }
+
   @beforeSave()
   public static async hashPassword(user: User) {
     if (user.$dirty.password) {
