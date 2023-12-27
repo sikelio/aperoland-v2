@@ -40,7 +40,25 @@ export default class extends Controller {
     });
   }
 
-  joinEvent(e: any) {
+  async joinEvent(e: any) {
     e.preventDefault();
+
+    const joinCode: string = $(e.target).find('[name="joinCode"]').val() as string;
+    
+    try {
+      await RequestHandler.post('/app/join-event', { joinCode });
+
+      CustomSweetAlert.Toast.fire({
+        icon: 'success',
+        text: 'Code valide'
+      });
+
+      location.href = '/app/home';
+    } catch (error: any) {
+      CustomSweetAlert.Toast.fire({
+        icon: 'error',
+        text: error.response.data.message
+      });
+    }
   }
 }

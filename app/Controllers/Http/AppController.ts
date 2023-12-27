@@ -126,4 +126,30 @@ export default class AppController {
       });
     }
   }
+
+  public async postJoinEvent({ response, request, auth }: HttpContextContract) {
+    const joinEventSchema = schema.create({
+      joinCode: schema.string({ trim: true })
+    });
+
+    try {
+      await request.validate({ schema: joinEventSchema });
+
+      const event = await Event.query().where('join_code', '=', request.input('joinCode'));
+
+      if (event.length === 0) {
+        return response.status(404).send({
+          success: false,
+          message: 'Code non valide !'
+        });
+      }
+
+      const user = await User.findOrFail(auth.user!.id);
+      await user.related('events').attach([event[0].id]);
+
+      return response.send(event);
+    } catch (error: any) {
+      return response.send(error);
+    }
+  }
 }
