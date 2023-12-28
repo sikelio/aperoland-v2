@@ -194,4 +194,64 @@ export default class AppController {
       // response.redirect().toRoute('app.home.get');
     }
   }
+
+  async deleteAttendeeFromEvent({ response, request, params }: HttpContextContract) {
+    const eventId = params.id;
+    const userId = request.input('userId');
+
+    const userSchema = schema.create({
+      userId: schema.number([])
+    });
+
+    try {
+      await request.validate({ schema: userSchema });
+
+      const event = await Event.findOrFail(eventId);
+      await event.related('attendees').detach([userId]);
+
+      return response.send({
+        message: 'Utilisateur retiré',
+        success: true
+      });
+    } catch (error: any) {
+      if (error.name === 'ValidationException') {
+        let reasons: string[] = [];
+
+        error.messages.errors.forEach((error: ValidationRule) => {
+          if (
+            error.message === ValidationMessages.NUMBER
+            && error.rule === ValidationRules.NUMBER
+          ) {
+            switch (error.field) {
+              case 'userId':
+                reasons.push('L\'ID de l\'utilisateur doit être un nombre');
+                break;
+            }
+          }
+
+          if (
+            error.message === ValidationMessages.REQUIRED
+            && error.rule === ValidationRules.REQUIRED
+          ) {
+            switch (error.field) {
+              case 'userId':
+                reasons.push('L\'ID de l\'utilisateur est requis');
+                break;
+            }
+          }
+        });
+
+        return response.status(400).send({
+          message: 'Erreur de saisie !',
+          success: false,
+          reasons
+        });
+      }
+
+      return response.status(500).send({
+        success: false,
+        message: 'Something went wrong'
+      });
+    }
+  }
 }

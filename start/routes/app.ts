@@ -10,6 +10,8 @@ Route.group(() => {
   Route.post('/join-event', 'AppController.postJoinEvent').as('app.join.event.post');
 
   Route.get('/event/:id', 'AppController.getEvent').as('app.event.get');
+
+  Route.delete('/event/:id/remove-attendee', 'AppController.deleteAttendeeFromEvent').as('app.remove.attendee.delete');
 })
   .prefix('/app')
   .middleware('auth');

@@ -1,5 +1,10 @@
 import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
+import RequestHandler from '../lib/RequestHandler';
+import CustomSweetAlert from '../lib/CustomSweetAlert';
+import Swal from 'sweetalert2';
+
+import type { SweetAlertResult } from 'sweetalert2';
 
 export default class extends Controller {
   static targets: string[] = ['tab', 'content'];
@@ -34,6 +39,42 @@ export default class extends Controller {
 
     this.contentTargets.forEach((content: HTMLElement, index: number) => {
       $(content).css('display', index === this.activeTabValue ? 'block' : 'none');
+    });
+  }
+
+  async removeAttendee(e: Event) {
+    e.preventDefault();
+
+    const eventId = $(e.target as HTMLElement).attr('data-event');
+    const userId = $(e.target as HTMLElement).attr('data-index');
+
+    Swal.fire({
+      icon: 'question',
+      title: 'Confimation',
+      text: 'Voulez vous vraiment supprimer cet utilisateur ?',
+      showCancelButton: true,
+      confirmButtonColor: '#ff0000',
+      cancelButtonText: 'Annuler',
+      confirmButtonText: 'Supprimer'
+    }).then(async (result: SweetAlertResult<any>) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await RequestHandler.delete(`/app/event/${eventId}/remove-attendee`, { userId });
+
+          $(`[data-index="${userId}"]`).remove();
+
+          CustomSweetAlert.Toast.fire({
+            icon: 'success',
+            text: response.data.message
+          });
+        } catch (error: any) {
+          CustomSweetAlert.Toast.fire({
+            icon: 'error',
+            title: 'Erreur de saisie',
+            html: RequestHandler.errorHandler(error.response.data.reasons)
+          });
+        }
+      }
     });
   }
 }

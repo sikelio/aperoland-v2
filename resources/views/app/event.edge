@@ -56,7 +56,7 @@
 
           <tbody class="text-gray-600 divide-y">
             @each(attendee in event.attendees)
-              <tr>
+              <tr data-index="{{ attendee.id }}">
                 <td class="flex items-center gap-x-3 py-3 px-6 whitespace-nowrap">
                   <img src="/avatar.png" class="w-10 h-10 rounded-full bg-white" />
 
@@ -78,7 +78,7 @@
                 @if(event.isCreator)
                   @unless(attendee.isYou)
                     <td class="text-right px-6 whitespace-nowrap">
-                      <button href="javascript:void()" class="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg">
+                      <button data-action="click->event#removeAttendee" data-index="{{ attendee.id }}" data-event="{{ event.id }}" class="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg">
                         Supprimer
                       </button>
                     </td>
