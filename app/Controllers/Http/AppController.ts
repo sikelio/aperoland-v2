@@ -195,7 +195,7 @@ export default class AppController {
     }
   }
 
-  async deleteAttendeeFromEvent({ response, request, params }: HttpContextContract) {
+  async deleteAttendeeFromEvent({ response, request, params, auth }: HttpContextContract) {
     const eventId = params.id;
     const userId = request.input('userId');
 
@@ -207,6 +207,15 @@ export default class AppController {
       await request.validate({ schema: userSchema });
 
       const event = await Event.findOrFail(eventId);
+      event.setTempUserId(auth.user!.id);
+
+      if (!event.isCreator) {
+        return response.status(403).send({
+          message: 'Vous n\'êtes pas autorisé à effectuer cette action',
+          success: false
+        });
+      }
+
       await event.related('attendees').detach([userId]);
 
       return response.send({
