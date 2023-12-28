@@ -77,4 +77,13 @@ export default class extends Controller {
       }
     });
   }
+
+  copyJoinCode(e: Event) {
+    navigator.clipboard.writeText($(e.target as HTMLElement).attr('data-code') as string);
+
+    CustomSweetAlert.Toast.fire({
+      icon: 'success',
+      title: 'Le code d\'invitation a bien été copié !'
+    });
+  }
 }
