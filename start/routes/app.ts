@@ -9,7 +9,7 @@ Route.group(() => {
 
   Route.post('/join-event', 'AppController.postJoinEvent').as('app.join.event.post');
 
-  Route.get('/event/:id', 'AppController.getEvent').as('app.event.get');
+  Route.get('/event/:id', 'AppController.getEvent').as('app.event.get').middleware('eventHandler');
 
   Route.delete('/event/:id/remove-attendee', 'AppController.deleteAttendeeFromEvent').as('app.remove.attendee.delete');
 })
