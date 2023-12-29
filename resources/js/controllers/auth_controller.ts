@@ -21,10 +21,12 @@ export default class extends Controller {
     const password = $(e.target).find('[name="password"]').val();
 
     try {
-      await RequestHandler.post('/auth/login', {
+      const response = await RequestHandler.post('/auth/login', {
         uid: username,
         password,
       });
+
+      localStorage.setItem('chatToken', response.data.token);
 
       location.href = '/app/home';
     } catch (error: any) {

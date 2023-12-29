@@ -195,7 +195,7 @@ export default class AppController {
     }
   }
 
-  async deleteAttendeeFromEvent({ response, request, params, auth }: HttpContextContract) {
+  public async deleteAttendeeFromEvent({ response, request, params, auth }: HttpContextContract) {
     const eventId = params.id;
     const userId = request.input('userId');
 

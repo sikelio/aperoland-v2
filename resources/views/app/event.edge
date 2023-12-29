@@ -22,6 +22,10 @@
         <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
           <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="1">Participants</button>
         </li>
+
+        <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
+          <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="2">Chat</button>
+        </li>
       </ul>
 
       <div data-event-target="content" class="tab-content">Infos</div>
@@ -88,6 +92,20 @@
             @end
           </tbody>
         </table>
+      </div>
+
+      <div data-controller="chat" data-event-target="content" class="tab-content">
+        <form id="chatForm" class="mt-2" data-action="submit->chat#sendMessage">
+          <input data-chat-target="input" autocomplete="off" />
+
+          <button>Send</button>
+        </form>
+
+        <ul id="messages" class="mb-3" data-chat-target="messages">
+          @each(message in messages)
+            <li>message</li>
+          @end
+        </ul>
       </div>
     </div>
   </div>
