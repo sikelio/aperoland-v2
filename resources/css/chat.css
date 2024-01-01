@@ -1,4 +1,4 @@
-#chatForm {
+/* #chatForm {
   background: rgba(0, 0, 0, 0.15);
   padding: 0.25rem;
   display: flex;
@@ -44,4 +44,4 @@
 
 .chatMessages > li:nth-child(odd) {
   background: #efefef;
-}
+} */

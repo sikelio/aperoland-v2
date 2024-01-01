@@ -94,18 +94,26 @@
         </table>
       </div>
 
-      <div data-controller="chat" data-event-target="content" class="tab-content">
-        <form id="chatForm" class="mt-2" data-action="submit->chat#sendMessage">
-          <input data-chat-target="input" autocomplete="off" />
-
-          <button>Send</button>
-        </form>
-
-        <ul id="messages" class="mb-3" data-chat-target="messages">
-          @each(message in messages)
-            <li>message</li>
+      <div data-controller="chat" data-event-target="content" class="tab-content" data-user="{{ userId }}">
+        <div id="chatbox" class="p-4 h-96 overflow-y-auto" data-chat-target="messages">
+          @each(message in event.messages)
+            <div class="mb-2">
+              <div class="{{ message.isAuthor ? 'text-right' : 'text-left' }}">
+                <span class="text-sm text-white">{{ message.user.username }}</span>
+              </div>
+              <div class="{{ message.isAuthor ? 'text-right' : '' }}">
+                <p class="{{ message.isAuthor ? 'bg-appYellow text-white' : 'bg-gray-200 text-gray-700' }}  rounded-lg py-2 px-4 inline-block">
+                  {{ message.message }}
+                </p>
+              </div>
+            </div>
           @end
-        </ul>
+        </div>
+
+        <form id="chatForm" class="p-4 flex" data-action="submit->chat#sendMessage">
+          <input data-chat-target="input" autocomplete="off" type="text" placeholder="Type a message" class="w-full px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button id="send-button" class="bg-appYellow text-white px-4 py-2 rounded-r-md hover:bg-appYellowLight transition duration-300">Send</button>
+        </form>
       </div>
     </div>
   </div>

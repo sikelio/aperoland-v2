@@ -176,22 +176,22 @@ export default class AppController {
     try {
       const event = await Event.findOrFail(params.id);
       await event.load('attendees');
+      await event.load('messages', (messagesQuery) => messagesQuery.preload('user'));
+
       event.setTempUserId(auth.user!.id);
+      event.messages.forEach(message => message.setTempUserId(auth.user!.id));
       event.attendees.forEach(attendee => {
         attendee.setTempUserId(auth.user!.id);
         attendee.setTempCreatorUserId(event.creatorId);
       });
 
-      // return response.send(event);
-
       return view.render('app/event', {
         event,
-        title: event.eventName
+        title: event.eventName,
+        userId: auth.user!.id
       })
     } catch (error: any) {
-      response.send(error)
-
-      // response.redirect().toRoute('app.home.get');
+      response.redirect().toRoute('app.home.get');
     }
   }
 

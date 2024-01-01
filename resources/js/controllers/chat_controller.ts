@@ -8,10 +8,15 @@ export default class extends Controller {
   declare readonly messagesTarget: HTMLElement;
   declare readonly inputTarget: HTMLInputElement;
 
+  declare currentUserId: string;
+
   private socket: Socket;
 
   public async connect() {
     const token = localStorage.getItem('chatToken');
+
+    this.currentUserId = $(this.element).attr('data-user') as string;
+    $(this.element).removeAttr('data-user');
 
     this.socket = io({
       query: { token }
@@ -19,6 +24,10 @@ export default class extends Controller {
 
     this.socket.emit('joinRoom', { room: this.getEventId(), token: localStorage.getItem('chatToken') });
     this.socket.on('chat message', (msg) => this.addMessage(msg));
+
+    document.addEventListener('chatTabSelected', () => {
+      this.messagesTarget.scrollTo(0, this.messagesTarget.scrollHeight);
+    });
   }
 
   public sendMessage(e: Event) {
@@ -39,12 +48,26 @@ export default class extends Controller {
   }
 
   private addMessage(msg) {
-    const item = document.createElement('li');
+    const isAuthor = msg.authorUserId == this.currentUserId;
 
-    $(item).text(`le ${this.escapeHTML(msg.date)} à ${this.escapeHTML(msg.time)} : ${this.escapeHTML(msg.username)} : ${this.escapeHTML(msg.msg)}`);
-    $(this.messagesTarget).prepend(item);
+    const item = $('<div>').addClass(`mb-2 ${isAuthor ? 'text-right': ''}`);
 
-    window.scrollTo(0, document.body.scrollHeight);
+    const usernameSpan = $('<span>')
+      .addClass('text-sm text-white')
+      .text(msg.username);
+
+    const usernameDiv = $('<div>')
+      .addClass(isAuthor ? 'text-right' : 'text-left')
+      .append(usernameSpan);
+
+    const messageContent = $('<p>')
+      .addClass(`${isAuthor ? 'bg-appYellow' : 'bg-gray-200'} ${isAuthor ? 'text-white' : 'text-gray-700'} rounded-lg py-2 px-4 inline-block`)
+      .text(this.escapeHTML(msg.message));
+
+    item.append(usernameDiv, messageContent);
+    $(this.messagesTarget).append(item);
+
+    this.messagesTarget.scrollTo(0, this.messagesTarget.scrollHeight);
   }
 
   private escapeHTML(str: string) {

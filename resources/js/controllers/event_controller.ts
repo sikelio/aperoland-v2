@@ -5,6 +5,7 @@ import CustomSweetAlert from '../lib/CustomSweetAlert';
 import Swal from 'sweetalert2';
 
 import type { SweetAlertResult } from 'sweetalert2';
+import type { AxiosResponse } from 'axios';
 
 export default class extends Controller {
   static targets: string[] = ['tab', 'content'];
@@ -19,7 +20,7 @@ export default class extends Controller {
   }
 
   changeTab(event: Event): void {
-    const index = $(event.currentTarget as HTMLElement).attr('data-index');
+    const index: string | undefined = $(event.currentTarget as HTMLElement).attr('data-index');
 
     if (index) {
       this.activeTabValue = parseInt(index);
@@ -30,6 +31,12 @@ export default class extends Controller {
   updateTabDisplay(): void {
     this.tabTargets.forEach((tab: HTMLElement, index: number) => {
       const isActive: boolean = index === this.activeTabValue;
+
+      if (isActive && $(tab).find('button').text() === 'Chat') {
+        const chatEvent: CustomEvent<unknown> = new CustomEvent('chatTabSelected', { bubbles: true });
+
+        tab.dispatchEvent(chatEvent);
+      }
 
       $(tab).toggleClass('border-appYellow', isActive);
       $(tab).toggleClass('text-appYellow', isActive);
@@ -59,7 +66,7 @@ export default class extends Controller {
     }).then(async (result: SweetAlertResult<any>) => {
       if (result.isConfirmed) {
         try {
-          const response = await RequestHandler.delete(`/app/event/${eventId}/remove-attendee`, { userId });
+          const response: AxiosResponse<any, any> = await RequestHandler.delete(`/app/event/${eventId}/remove-attendee`, { userId });
 
           $(`[data-index="${userId}"]`).remove();
 

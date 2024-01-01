@@ -3,6 +3,8 @@ import AdonisServer from '@ioc:Adonis/Core/Server';
 import { ChatUser, MessagePackage } from '../Interfaces/ChatBox';
 import jwt from 'jsonwebtoken';
 import Env from '@ioc:Adonis/Core/Env';
+import ChatMessage from 'App/Models/ChatMessage';
+import ChatToken from 'App/Interfaces/ChatToken';
 
 declare module 'socket.io' {
   interface Socket {
@@ -59,13 +61,25 @@ class Ws {
     return this.users.find(user => user.socketId == id);
   }
 
-  public chatBox(socket: Socket, msg: MessagePackage) {
+  public async chatBox(socket: Socket, msg: MessagePackage) {
     const user: ChatUser | undefined = this.getCurrentUser(socket.id);
+    const token = jwt.verify(socket.handshake.query.token as string, Env.get('JWT_SECRET')) as ChatToken;
 
-    return this.io.to(user!.room).emit('chat message', {
-      username: user!.username,
-      message: msg.msg
-    });
+    try {
+      await ChatMessage.create({
+        userId: token.id,
+        eventId: Number(user!.room),
+        message: msg.msg as string
+      });
+
+      return this.io.to(user!.room).emit('chat message', {
+        username: user!.username,
+        message: msg.msg,
+        authorUserId: token.id
+      });
+    } catch (error: any) {
+      return new Error('Something went wrong');
+    }
   }
 }
 
