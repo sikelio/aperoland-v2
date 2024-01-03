@@ -3,6 +3,13 @@
 
 @section('body')
   @if(hasEvents)
+    <div class="flex mb-5">
+      <a href="{{ route('app.add.event.get') }}" class="flex items-center justify-center gap-x-2 py-2.5 px-4 mt-3 w-full text-sm text-white font-medium bg-appYellow hover:bg-appYellowLight duration-150 rounded-lg sm:mt-0 sm:w-auto">
+        Créer un Apéro
+        <i class="fa-solid fa-plus"></i>
+      </a>
+    </div>
+
     <ul data-controller="app" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       @each(event in events)
         <li class="border rounded-lg">
@@ -20,8 +27,10 @@
           </div>
 
           <div class="py-5 px-4 border-t text-right">
-            <span class="text-white">Code : </span>
-            <button data-action="click->app#copyJoinCode" class="font-semibold text-white hover:text-appOrangeLight text-sm font-medium mr-5">{{ event.joinCode }}</button>
+            @if(event.isCreator)
+              <span class="text-white">Code : </span>
+              <button data-action="click->app#copyJoinCode" class="font-semibold text-white hover:text-appOrangeLight text-sm font-medium mr-5">{{ event.joinCode }}</button>  
+            @end
 
             <a href="/app/event/{{event.id}}" class="font-semibold text-white hover:text-appOrangeLight text-sm font-medium">Accéder</a>
           </div>
@@ -42,7 +51,7 @@
 
           <div>
             <form class="justify-center items-center gap-x-3 sm:flex" data-action="submit->app#joinEvent">
-              <input type="text" placeholder="Code d'Apéro" class="w-full px-3 py-2.5 text-gray-400 bg-gray-700 focus:bg-gray-900 duration-150 outline-none rounded-lg shadow sm:max-w-sm sm:w-auto" />
+              <input type="text" name="joinCode"  placeholder="Code d'Apéro" class="w-full px-3 py-2.5 text-gray-400 bg-gray-700 focus:bg-gray-900 duration-150 outline-none rounded-lg shadow sm:max-w-sm sm:w-auto" />
 
               <button type="submit" class="flex items-center justify-center gap-x-2 py-2.5 px-4 mt-3 w-full text-sm text-white font-medium bg-appBlueDark hover:bg-appBlueDarkLight duration-150 rounded-lg sm:mt-0 sm:w-auto">
                 Rejoindre l'Apéro

@@ -4,31 +4,42 @@ import Swal from 'sweetalert2';
 import RequestHandler from '../lib/RequestHandler';
 import CustomSweetAlert from '../lib/CustomSweetAlert';
 
+import type { SweetAlertResult } from 'sweetalert2';
+
 export default class extends Controller {
-  async handleLogin(e: any) {
+  async handleLogin(e: Event): Promise<JQuery<HTMLElement> | SweetAlertResult<any> | '/app/home'> {
     e.preventDefault();
 
-    if (localStorage.getItem('cookieConsent') === 'declined' || !localStorage.getItem('cookieConsent')) {
+    if (
+      localStorage.getItem('cookieConsent') === 'declined' ||
+      !localStorage.getItem('cookieConsent')
+    ) {
       CustomSweetAlert.Toast.fire({
         icon: 'warning',
-        text: 'Veuillez accepter les cookies afin de pouvoir vous connecter !'
+        text: 'Veuillez accepter les cookies afin de pouvoir vous connecter !',
       });
 
       return $('#cookieConsentPopup').show();
     }
 
-    const username = $(e.target).find('[name="uid"]').val();
-    const password = $(e.target).find('[name="password"]').val();
+    const uid: string = $(e.currentTarget as HTMLElement)
+      .find('[name="uid"]')
+      .val() as string;
+    const password: string = $(e.currentTarget as HTMLElement)
+      .find('[name="password"]')
+      .val() as string;
 
     try {
-      await RequestHandler.post('/auth/login', {
-        uid: username,
+      const response = await RequestHandler.post('/auth/login', {
+        uid,
         password,
       });
 
-      location.href = '/app/home';
+      localStorage.setItem('chatToken', response.data.token);
+
+      return (location.href = '/app/home');
     } catch (error: any) {
-      Swal.fire({
+      return Swal.fire({
         title: error.response.statusText,
         text: error.response.data.message,
         icon: 'error',
@@ -36,22 +47,35 @@ export default class extends Controller {
     }
   }
 
-  async handleRegister(e: any) {
+  async handleRegister(
+    e: Event
+  ): Promise<JQuery<HTMLElement> | SweetAlertResult<any> | '/app/home'> {
     e.preventDefault();
 
-    if (localStorage.getItem('cookieConsent') === 'declined' || !localStorage.getItem('cookieConsent')) {
+    if (
+      localStorage.getItem('cookieConsent') === 'declined' ||
+      !localStorage.getItem('cookieConsent')
+    ) {
       CustomSweetAlert.Toast.fire({
         icon: 'warning',
-        text: 'Veuillez accepter les cookies afin de pouvoir vous inscrire !'
+        text: 'Veuillez accepter les cookies afin de pouvoir vous inscrire !',
       });
 
       return $('#cookieConsentPopup').show();
     }
 
-    const username = $(e.target).find('[name="username"]').val();
-    const email = $(e.target).find('[name="email"]').val();
-    const password = $(e.target).find('[name="password"]').val();
-    const confirmPassword = $(e.target).find('[name="confirmPassword"]').val();
+    const username: string = $(e.currentTarget as HTMLElement)
+      .find('[name="username"]')
+      .val() as string;
+    const email: string = $(e.currentTarget as HTMLElement)
+      .find('[name="email"]')
+      .val() as string;
+    const password: string = $(e.currentTarget as HTMLElement)
+      .find('[name="password"]')
+      .val() as string;
+    const confirmPassword: string = $(e.currentTarget as HTMLElement)
+      .find('[name="confirmPassword"]')
+      .val() as string;
 
     if (password !== confirmPassword) {
       return Swal.fire({
@@ -69,9 +93,9 @@ export default class extends Controller {
         confirmPassword,
       });
 
-      location.href = '/app/home';
+      return (location.href = '/app/home');
     } catch (error: any) {
-      Swal.fire({
+      return Swal.fire({
         title: error.response.data.message,
         html: RequestHandler.errorHandler(error.response.data.reasons),
         icon: 'error',

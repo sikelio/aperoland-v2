@@ -6,13 +6,14 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
+      table.collate('utf8_unicode_ci');
+
       table.increments('role_id');
+
+      table.collate('utf8_unicode_ci');
 
       table.string('name', 50).notNullable();
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
       table.timestamp('created_at', { useTz: true });
 
       table.timestamp('updated_at', { useTz: true });

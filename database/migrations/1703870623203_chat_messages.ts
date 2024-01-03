@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'attendees';
+  protected tableName = 'chat_messages';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -11,12 +11,14 @@ export default class extends BaseSchema {
 
       table.collate('utf8_unicode_ci');
 
+      table.increments('message_id').primary();
+
       table
         .integer('user_id')
         .unsigned()
         .references('user_id')
         .inTable('users')
-        .onDelete('CASCADE');
+        .onDelete('SET NULL');
 
       table
         .integer('event_id')
@@ -25,9 +27,13 @@ export default class extends BaseSchema {
         .inTable('events')
         .onDelete('CASCADE');
 
-      table.unique(['user_id', 'event_id']);
+      table.string('message', 255).notNullable();
 
-      table.timestamp('created_at', { useTz: true }).defaultTo(this.now());
+      table.boolean('deleted').notNullable().defaultTo(false);
+
+      table.timestamp('created_at', { useTz: true });
+
+      table.timestamp('updated_at', { useTz: true });
     });
   }
 

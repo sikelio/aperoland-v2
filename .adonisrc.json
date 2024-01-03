@@ -38,6 +38,10 @@
     {
       "pattern": "resources/views/**/*.edge",
       "reloadServer": false
+    },
+    {
+      "pattern": "resources/js/**/*.ts",
+      "reloadServer": false
     }
   ],
   "aceProviders": ["@adonisjs/repl"],

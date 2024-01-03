@@ -5,41 +5,29 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table
-        .increments('event_id')
-        .primary();
+      table.charset('utf8');
 
-      table
-        .integer('creator_id')
-        .unsigned()
-        .references('user_id')
-        .inTable('users');
+      table.engine('InnoDB');
 
-      table
-        .string('event_name', 255)
-        .notNullable();
+      table.collate('utf8_unicode_ci');
 
-      table
-        .text('description')
-        .nullable();
+      table.increments('event_id').primary();
 
-      table
-        .dateTime('start_datetime')
-        .notNullable();
+      table.integer('creator_id').unsigned().references('user_id').inTable('users');
 
-      table
-        .dateTime('end_datetime')
-        .notNullable();
+      table.string('event_name', 255).notNullable();
 
-      table
-        .string('join_code', 18)
-        .notNullable();
+      table.text('description').nullable();
 
-      table
-        .timestamp('created_at', { useTz: true });
+      table.dateTime('start_datetime').notNullable();
 
-      table
-        .timestamp('updated_at', { useTz: true });
+      table.dateTime('end_datetime').notNullable();
+
+      table.string('join_code', 18).notNullable();
+
+      table.timestamp('created_at', { useTz: true });
+
+      table.timestamp('updated_at', { useTz: true });
     });
   }
 

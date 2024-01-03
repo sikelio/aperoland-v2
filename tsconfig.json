@@ -1,9 +1,8 @@
 {
   "extends": "adonis-preset-ts/tsconfig.json",
   "include": ["**/*"],
-  "exclude": ["node_modules", "build"],
+  "exclude": ["node_modules", "build", "resources"],
   "compilerOptions": {
-    "lib": ["DOM"],
     "outDir": "build",
     "rootDir": "./",
     "sourceMap": true,
