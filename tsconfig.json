@@ -3,7 +3,6 @@
   "include": ["**/*"],
   "exclude": ["node_modules", "build", "resources"],
   "compilerOptions": {
-    "lib": ["DOM"],
     "outDir": "build",
     "rootDir": "./",
     "sourceMap": true,

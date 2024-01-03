@@ -1,4 +1,4 @@
-const { join } = require('path');
+const { join, resolve } = require('path');
 const Encore = require('@symfony/webpack-encore');
 
 /*
@@ -46,7 +46,9 @@ Encore.setPublicPath('/assets');
 |
 */
 Encore.addEntry('app', './resources/js/app.ts')
-  .enableTypeScriptLoader()
+  .enableTypeScriptLoader((tsConfig) => {
+    tsConfig.configFile = resolve(__dirname, './resources/js/tsconfig.json');
+  })
   .enableForkedTypeScriptTypesChecking();
 
 /*
@@ -146,9 +148,6 @@ Encore.configureDevServerOptions((options) => {
   options.static.push({
     directory: join(__dirname, './resources/views'),
     watch: true,
-  });
-  options.static.push({
-    directory: join(__dirname, './resources/js'),
   });
 });
 

@@ -40,7 +40,7 @@
       "reloadServer": false
     },
     {
-      "pattern": "resources/js/controllers/**",
+      "pattern": "resources/js/**/*.ts",
       "reloadServer": false
     }
   ],
