@@ -1,0 +1,16 @@
+.ts-control,
+.ts-wrapper.single.input-active .ts-control {
+  background-color: transparent !important;
+}
+
+.ts-wrapper.single .ts-control {
+  background-image: none !important;
+}
+
+.ts-control input {
+  color: white;
+}
+
+.ts-wrapper.single .ts-control {
+  box-shadow: none !important;
+}

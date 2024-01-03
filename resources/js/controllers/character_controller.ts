@@ -13,13 +13,9 @@ export default class extends Controller {
       .length;
 
     if (currentLength > 255 || currentLength < 0) {
-      $(this.outputTarget)
-        .removeClass('text-white')
-        .addClass('text-red-600');
+      $(this.outputTarget).removeClass('text-white').addClass('text-red-600');
     } else {
-      $(this.outputTarget)
-        .removeClass('text-red-600')
-        .addClass('text-white');
+      $(this.outputTarget).removeClass('text-red-600').addClass('text-white');
     }
 
     return $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
@@ -32,13 +28,9 @@ export default class extends Controller {
       .length;
 
     if (currentLength > 255 || currentLength < 0) {
-      $(this.outputTarget)
-        .removeClass('text-white')
-        .addClass('text-red-600');
+      $(this.outputTarget).removeClass('text-white').addClass('text-red-600');
     } else {
-      $(this.outputTarget)
-        .removeClass('text-red-600')
-        .addClass('text-white');
+      $(this.outputTarget).removeClass('text-red-600').addClass('text-white');
     }
 
     return $(this.outputTarget).text(`${currentLength} / ${maxLength}`);

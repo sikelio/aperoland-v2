@@ -34,6 +34,17 @@
 				<input type="datetime-local" required name="endDateTime" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
 			</div>
 
+      <div data-controller="location">
+        <label class="font-bold text-white">
+          Sélectionnez une Option
+          <span class="text-red-600">*</span>
+        </label>
+        <select data-target="location.select" required class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white">
+          <!-- les options seront chargées dynamiquement ici -->
+        </select>
+      </div>
+
+
 			<button class="w-full px-4 py-2 text-white font-medium bg-appBlueDark hover:bg-appBlueDarkLight active:bg-appBlueDark rounded-lg duration-150" >
 				Créer mon Apéro
 			</button>
