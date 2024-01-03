@@ -21,11 +21,13 @@ export default class AuthController {
       await auth.use('web').attempt(uid, password);
 
       const user = auth.use('web').user!;
-      const token = jwt.sign({ id: user.id, username: user.username }, Env.get('JWT_SECRET'), { expiresIn: '24h' });
+      const token = jwt.sign({ id: user.id, username: user.username }, Env.get('JWT_SECRET'), {
+        expiresIn: '24h',
+      });
 
       return response.status(200).send({
         message: "You're now logged in",
-        token: token
+        token: token,
       });
     } catch {
       return response.badRequest({

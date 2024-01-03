@@ -1,5 +1,15 @@
 import { DateTime } from 'luxon';
-import { BaseModel, BelongsTo, HasMany, ManyToMany, belongsTo, column, computed, hasMany, manyToMany } from '@ioc:Adonis/Lucid/Orm';
+import {
+  BaseModel,
+  BelongsTo,
+  HasMany,
+  ManyToMany,
+  belongsTo,
+  column,
+  computed,
+  hasMany,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm';
 
 import User from './User';
 import ChatMessage from './ChatMessage';
@@ -41,7 +51,7 @@ export default class Event extends BaseModel {
   public attendees: ManyToMany<typeof User>;
 
   @hasMany(() => ChatMessage)
-  public messages: HasMany<typeof ChatMessage>
+  public messages: HasMany<typeof ChatMessage>;
 
   private tempUserId: number;
 

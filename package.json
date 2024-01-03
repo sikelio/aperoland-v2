@@ -25,7 +25,8 @@
     }
   },
   "eslintIgnore": [
-    "build"
+    "build",
+    "resources/js"
   ],
   "prettier": {
     "trailingComma": "es5",

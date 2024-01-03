@@ -23,17 +23,17 @@ export default class extends Controller {
     return $(this.mobileMenuTarget).toggleClass('hidden');
   }
 
-  async logout(e: Event): Promise<"/auth/login" | SweetAlertResult<any>> {
+  async logout(e: Event): Promise<'/auth/login' | SweetAlertResult<any>> {
     e.preventDefault();
 
     try {
       await axios.post('/auth/logout');
 
-      return location.href = '/auth/login';
+      return (location.href = '/auth/login');
     } catch (error: any) {
       return CustomSweetAlert.Toast.fire({
         icon: 'warning',
-        text: 'Quelque chose s\'est mal passé lors de la déconnexion !'
+        text: "Quelque chose s'est mal passé lors de la déconnexion !",
       });
     }
   }

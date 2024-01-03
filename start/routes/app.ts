@@ -11,7 +11,9 @@ Route.group(() => {
 
   Route.get('/event/:id', 'AppController.getEvent').as('app.event.get').middleware('eventHandler');
 
-  Route.delete('/event/:id/remove-attendee', 'AppController.deleteAttendeeFromEvent').as('app.remove.attendee.delete');
+  Route.delete('/event/:id/remove-attendee', 'AppController.deleteAttendeeFromEvent').as(
+    'app.remove.attendee.delete'
+  );
 })
   .prefix('/app')
   .middleware('auth');

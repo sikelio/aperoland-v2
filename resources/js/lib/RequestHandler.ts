@@ -11,15 +11,15 @@ export default class RequestHandler {
     return axios.post(url, data);
   }
 
-  public static delete(url: string, data: any= {}): Promise<AxiosResponse<any, any>> {
+  public static delete(url: string, data: any = {}): Promise<AxiosResponse<any, any>> {
     return axios.delete(url, {
-      data: data
+      data: data,
     });
   }
 
   public static get(url: string, data: any = {}): Promise<AxiosResponse<any, any>> {
     return axios.get(url, {
-      data: data
+      data: data,
     });
   }
 }

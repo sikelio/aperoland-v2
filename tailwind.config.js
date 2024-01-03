@@ -15,7 +15,7 @@ module.exports = {
         appBlueDark: '#021B29',
         appBlueDarkLight: '#0C2C3E',
         appPurple: '#320250',
-        appPurpleLight: '#420568'
+        appPurpleLight: '#420568',
       },
     },
   },

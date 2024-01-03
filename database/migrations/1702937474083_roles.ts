@@ -6,24 +6,17 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table
-        .collate('utf8_unicode_ci');
+      table.collate('utf8_unicode_ci');
 
-      table
-          .increments('role_id');
+      table.increments('role_id');
 
-      table
-        .collate('utf8_unicode_ci');
+      table.collate('utf8_unicode_ci');
 
-      table
-        .string('name', 50)
-        .notNullable();
+      table.string('name', 50).notNullable();
 
-      table
-        .timestamp('created_at', { useTz: true });
+      table.timestamp('created_at', { useTz: true });
 
-      table
-        .timestamp('updated_at', { useTz: true });
+      table.timestamp('updated_at', { useTz: true });
     });
 
     this.defer(async (db) => {

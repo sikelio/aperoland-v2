@@ -45,8 +45,7 @@ Encore.setPublicPath('/assets');
 | entrypoints.
 |
 */
-Encore
-  .addEntry('app', './resources/js/app.ts')
+Encore.addEntry('app', './resources/js/app.ts')
   .enableTypeScriptLoader()
   .enableForkedTypeScriptTypesChecking();
 
@@ -149,8 +148,8 @@ Encore.configureDevServerOptions((options) => {
     watch: true,
   });
   options.static.push({
-    directory: join(__dirname, './resources/js')
-  })
+    directory: join(__dirname, './resources/js'),
+  });
 });
 
 /*

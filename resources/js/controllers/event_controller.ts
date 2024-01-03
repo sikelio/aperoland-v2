@@ -9,7 +9,7 @@ import type { AxiosResponse } from 'axios';
 
 export default class extends Controller {
   static targets: string[] = ['tab', 'content'];
-  static values = { activeTab: Number }
+  static values = { activeTab: Number };
 
   declare readonly tabTargets: HTMLElement[];
   declare readonly contentTargets: HTMLElement[];
@@ -33,7 +33,9 @@ export default class extends Controller {
       const isActive: boolean = index === this.activeTabValue;
 
       if (isActive && $(tab).find('button').text() === 'Chat') {
-        const chatEvent: CustomEvent<unknown> = new CustomEvent('chatTabSelected', { bubbles: true });
+        const chatEvent: CustomEvent<unknown> = new CustomEvent('chatTabSelected', {
+          bubbles: true,
+        });
 
         tab.dispatchEvent(chatEvent);
       }
@@ -62,23 +64,26 @@ export default class extends Controller {
       showCancelButton: true,
       confirmButtonColor: '#ff0000',
       cancelButtonText: 'Annuler',
-      confirmButtonText: 'Supprimer'
+      confirmButtonText: 'Supprimer',
     }).then(async (result: SweetAlertResult<any>): Promise<SweetAlertResult<any> | undefined> => {
       if (result.isConfirmed) {
         try {
-          const response: AxiosResponse<any, any> = await RequestHandler.delete(`/app/event/${eventId}/remove-attendee`, { userId });
+          const response: AxiosResponse<any, any> = await RequestHandler.delete(
+            `/app/event/${eventId}/remove-attendee`,
+            { userId }
+          );
 
           $(`[data-index="${userId}"]`).remove();
 
           return CustomSweetAlert.Toast.fire({
             icon: 'success',
-            text: response.data.message
+            text: response.data.message,
           });
         } catch (error: any) {
           return CustomSweetAlert.Toast.fire({
             icon: 'error',
             title: 'Erreur de saisie',
-            html: RequestHandler.errorHandler(error.response.data.reasons)
+            html: RequestHandler.errorHandler(error.response.data.reasons),
           });
         }
       }
@@ -90,7 +95,7 @@ export default class extends Controller {
 
     return CustomSweetAlert.Toast.fire({
       icon: 'success',
-      title: 'Le code d\'invitation a bien été copié !'
+      title: "Le code d'invitation a bien été copié !",
     });
   }
 }

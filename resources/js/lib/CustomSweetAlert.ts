@@ -10,6 +10,6 @@ export default class CustomSweetAlert {
     didOpen: (toast: HTMLElement) => {
       toast.onmouseenter = Swal.stopTimer;
       toast.onmouseleave = Swal.resumeTimer;
-    }
+    },
   });
 }

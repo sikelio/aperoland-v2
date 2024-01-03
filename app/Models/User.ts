@@ -52,7 +52,7 @@ export default class User extends BaseModel {
     localKey: 'id',
     pivotForeignKey: 'user_id',
     relatedKey: 'id',
-    pivotRelatedForeignKey: 'event_id'
+    pivotRelatedForeignKey: 'event_id',
   })
   public events: ManyToMany<typeof Event>;
 

@@ -4,7 +4,7 @@ enum ValidationRules {
   MAX_LENGTH = 'maxLength',
   REQUIRED = 'required',
   DATE_FORMAT = 'date.format',
-  NUMBER = 'number'
+  NUMBER = 'number',
 }
 
 export default ValidationRules;

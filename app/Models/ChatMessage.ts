@@ -8,7 +8,7 @@ export default class ChatMessage extends BaseModel {
   public static table = 'chat_messages';
 
   @column({ columnName: 'messageId', isPrimary: true })
-  public id: number
+  public id: number;
 
   @column({ columnName: 'user_id' })
   public userId: number;
@@ -23,14 +23,14 @@ export default class ChatMessage extends BaseModel {
   public isDelete: boolean;
 
   @belongsTo(() => User, {
-    foreignKey: 'userId'
+    foreignKey: 'userId',
   })
-  public user: BelongsTo<typeof User>
+  public user: BelongsTo<typeof User>;
 
   @belongsTo(() => Event, {
-    foreignKey: 'eventId'
+    foreignKey: 'eventId',
   })
-  public event: BelongsTo<typeof Event>
+  public event: BelongsTo<typeof Event>;
 
   private tempUserId: number;
 
@@ -44,8 +44,8 @@ export default class ChatMessage extends BaseModel {
   }
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public createdAt: DateTime;
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  public updatedAt: DateTime;
 }

@@ -21,10 +21,13 @@ export default class extends Controller {
     $(this.element).removeAttr('data-user');
 
     this.socket = io({
-      query: { token }
+      query: { token },
     });
 
-    this.socket.emit('joinRoom', { room: this.getEventId(), token: localStorage.getItem('chatToken') });
+    this.socket.emit('joinRoom', {
+      room: this.getEventId(),
+      token: localStorage.getItem('chatToken'),
+    });
     this.socket.on('chat message', (msg: MessagePackage): void => this.addMessage(msg));
 
     document.addEventListener('chatTabSelected', (): void => {
@@ -43,7 +46,7 @@ export default class extends Controller {
 
     this.socket.emit('chat message', {
       msg: message,
-      eventId: this.getEventId()
+      eventId: this.getEventId(),
     });
 
     return $(this.inputTarget).val('');
@@ -52,7 +55,7 @@ export default class extends Controller {
   private addMessage(msg: MessagePackage) {
     const isAuthor: boolean = msg.authorUserId == this.currentUserId;
 
-    const item: JQuery<HTMLElement> = $('<div>').addClass(`mb-2 ${isAuthor ? 'text-right': ''}`);
+    const item: JQuery<HTMLElement> = $('<div>').addClass(`mb-2 ${isAuthor ? 'text-right' : ''}`);
 
     const usernameSpan: JQuery<HTMLElement> = $('<span>')
       .addClass('text-sm text-white')
@@ -63,7 +66,11 @@ export default class extends Controller {
       .append(usernameSpan);
 
     const messageContent: JQuery<HTMLElement> = $('<p>')
-      .addClass(`${isAuthor ? 'bg-appYellow' : 'bg-gray-200'} ${isAuthor ? 'text-white' : 'text-gray-700'} rounded-lg py-2 px-4 inline-block`)
+      .addClass(
+        `${isAuthor ? 'bg-appYellow' : 'bg-gray-200'} ${
+          isAuthor ? 'text-white' : 'text-gray-700'
+        } rounded-lg py-2 px-4 inline-block`
+      )
       .text(this.escapeHTML(msg.message));
 
     item.append(usernameDiv, messageContent);
@@ -73,8 +80,7 @@ export default class extends Controller {
   }
 
   private escapeHTML(str: string | string[]): string {
-    const div: JQuery<HTMLElement> = $('<div>')
-      .append(document.createTextNode(str as string));
+    const div: JQuery<HTMLElement> = $('<div>').append(document.createTextNode(str as string));
 
     return $(div).html();
   }

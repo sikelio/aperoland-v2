@@ -19,15 +19,15 @@ class Ws {
 
   public boot(): void {
     if (this.booted) {
-      return
+      return;
     }
 
     this.booted = true;
     this.io = new Server(AdonisServer.instance!, {
       cors: {
         origin: true,
-        methods: ['GET', 'POST']
-      }
+        methods: ['GET', 'POST'],
+      },
     });
 
     this.io.use((socket, next) => {
@@ -58,24 +58,27 @@ class Ws {
   }
 
   private getCurrentUser(id): ChatUser | undefined {
-    return this.users.find(user => user.socketId == id);
+    return this.users.find((user) => user.socketId === id);
   }
 
   public async chatBox(socket: Socket, msg: MessagePackage) {
     const user: ChatUser | undefined = this.getCurrentUser(socket.id);
-    const token = jwt.verify(socket.handshake.query.token as string, Env.get('JWT_SECRET')) as ChatToken;
+    const token = jwt.verify(
+      socket.handshake.query.token as string,
+      Env.get('JWT_SECRET')
+    ) as ChatToken;
 
     try {
       await ChatMessage.create({
         userId: token.id,
         eventId: Number(user!.room),
-        message: msg.msg as string
+        message: msg.msg as string,
       });
 
       return this.io.to(user!.room).emit('chat message', {
         username: user!.username,
         message: msg.msg,
-        authorUserId: token.id
+        authorUserId: token.id,
       });
     } catch (error: any) {
       return new Error('Something went wrong');

@@ -16,11 +16,11 @@ export default class AppController {
       eventsQuery.orderBy('startDateTime', 'asc');
     });
 
-    user.events.forEach(event => event.setTempUserId(user.id));
+    user.events.forEach((event) => event.setTempUserId(user.id));
 
     return view.render('app/home', {
       events: user.events,
-      hasEvents: user.events.length > 0
+      hasEvents: user.events.length > 0,
     });
   }
 
@@ -33,7 +33,9 @@ export default class AppController {
       return response.status(400).send({
         message: 'Erreur de saisie !',
         success: false,
-        reasons: ['Vous ne pouvez pas créer d\'Apéro avec une date de début supérieure à la date de fin !'],
+        reasons: [
+          "Vous ne pouvez pas créer d'Apéro avec une date de début supérieure à la date de fin !",
+        ],
       });
     }
 
@@ -53,7 +55,7 @@ export default class AppController {
         description: request.input('description'),
         startDateTime: request.input('startDateTime'),
         endDateTime: request.input('endDateTime'),
-        joinCode: RandomGenerator.generateJoinCode()
+        joinCode: RandomGenerator.generateJoinCode(),
       });
 
       await event.related('attendees').attach([auth.user!.id]);
@@ -105,9 +107,7 @@ export default class AppController {
           }
         }
 
-        if (
-          error.rule === ValidationRules.DATE_FORMAT
-        ) {
+        if (error.rule === ValidationRules.DATE_FORMAT) {
           switch (error.field) {
             case 'startDateTime':
               reasons.push("La date de début de l'Apéro n'est pas dans un format reconnus");
@@ -122,14 +122,14 @@ export default class AppController {
       return response.status(400).send({
         message: 'Erreur de saisie !',
         success: false,
-        reasons: reasons
+        reasons: reasons,
       });
     }
   }
 
   public async postJoinEvent({ response, request, auth }: HttpContextContract) {
     const joinEventSchema = schema.create({
-      joinCode: schema.string({ trim: true }, [])
+      joinCode: schema.string({ trim: true }, []),
     });
 
     try {
@@ -140,7 +140,7 @@ export default class AppController {
       if (event.length === 0) {
         return response.status(404).send({
           success: false,
-          message: 'Code non valide !'
+          message: 'Code non valide !',
         });
       }
 
@@ -158,7 +158,7 @@ export default class AppController {
         ) {
           switch (error.field) {
             case 'joinCode':
-              reasons.push('Le code d\'Apéro est requis')
+              reasons.push("Le code d'Apéro est requis");
               break;
           }
         }
@@ -167,7 +167,7 @@ export default class AppController {
       return response.status(400).send({
         message: 'Erreur de saisie !',
         success: false,
-        reasons
+        reasons,
       });
     }
   }
@@ -179,8 +179,8 @@ export default class AppController {
       await event.load('messages', (messagesQuery) => messagesQuery.preload('user'));
 
       event.setTempUserId(auth.user!.id);
-      event.messages.forEach(message => message.setTempUserId(auth.user!.id));
-      event.attendees.forEach(attendee => {
+      event.messages.forEach((message) => message.setTempUserId(auth.user!.id));
+      event.attendees.forEach((attendee) => {
         attendee.setTempUserId(auth.user!.id);
         attendee.setTempCreatorUserId(event.creatorId);
       });
@@ -188,8 +188,8 @@ export default class AppController {
       return view.render('app/event', {
         event,
         title: event.eventName,
-        userId: auth.user!.id
-      })
+        userId: auth.user!.id,
+      });
     } catch (error: any) {
       response.redirect().toRoute('app.home.get');
     }
@@ -200,7 +200,7 @@ export default class AppController {
     const userId = request.input('userId');
 
     const userSchema = schema.create({
-      userId: schema.number([])
+      userId: schema.number([]),
     });
 
     try {
@@ -211,8 +211,8 @@ export default class AppController {
 
       if (!event.isCreator) {
         return response.status(403).send({
-          message: 'Vous n\'êtes pas autorisé à effectuer cette action',
-          success: false
+          message: "Vous n'êtes pas autorisé à effectuer cette action",
+          success: false,
         });
       }
 
@@ -220,7 +220,7 @@ export default class AppController {
 
       return response.send({
         message: 'Utilisateur retiré',
-        success: true
+        success: true,
       });
     } catch (error: any) {
       if (error.name === 'ValidationException') {
@@ -228,23 +228,23 @@ export default class AppController {
 
         error.messages.errors.forEach((error: ValidationRule) => {
           if (
-            error.message === ValidationMessages.NUMBER
-            && error.rule === ValidationRules.NUMBER
+            error.message === ValidationMessages.NUMBER &&
+            error.rule === ValidationRules.NUMBER
           ) {
             switch (error.field) {
               case 'userId':
-                reasons.push('L\'ID de l\'utilisateur doit être un nombre');
+                reasons.push("L'ID de l'utilisateur doit être un nombre");
                 break;
             }
           }
 
           if (
-            error.message === ValidationMessages.REQUIRED
-            && error.rule === ValidationRules.REQUIRED
+            error.message === ValidationMessages.REQUIRED &&
+            error.rule === ValidationRules.REQUIRED
           ) {
             switch (error.field) {
               case 'userId':
-                reasons.push('L\'ID de l\'utilisateur est requis');
+                reasons.push("L'ID de l'utilisateur est requis");
                 break;
             }
           }
@@ -253,13 +253,13 @@ export default class AppController {
         return response.status(400).send({
           message: 'Erreur de saisie !',
           success: false,
-          reasons
+          reasons,
         });
       }
 
       return response.status(500).send({
         success: false,
-        message: 'Something went wrong'
+        message: 'Something went wrong',
       });
     }
   }

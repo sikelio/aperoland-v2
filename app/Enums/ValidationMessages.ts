@@ -3,7 +3,7 @@ enum ValidationMessages {
   MAX_LENGTH = 'maxLength validation failed',
   REQUIRED = 'required validation failed',
   UNIQUE = 'unique validation failure',
-  NUMBER = 'number validation failed'
+  NUMBER = 'number validation failed',
 }
 
 export default ValidationMessages;
