@@ -4,26 +4,29 @@ import Swal from 'sweetalert2';
 import RequestHandler from '../lib/RequestHandler';
 import CustomSweetAlert from '../lib/CustomSweetAlert';
 
+import type { AxiosResponse } from 'axios';
+import type { SweetAlertResult } from 'sweetalert2';
+
 export default class extends Controller {
-  async handleNewEvent(e: any) {
+  async handleNewEvent(e: Event): Promise<string | SweetAlertResult<any>> {
     e.preventDefault();
 
-    const eventName = $(e.target).find('[name="eventName"]').val();
-    const description = $(e.target).find('[name="description"]').val();
-    const startDateTime = $(e.target).find('[name="startDateTime"]').val();
-    const endDateTime = $(e.target).find('[name="endDateTime"]').val();
+    const eventName: string = $(e.currentTarget as HTMLElement).find('[name="eventName"]').val() as string;
+    const description: string = $(e.currentTarget as HTMLElement).find('[name="description"]').val() as string;
+    const startDateTime: string = $(e.currentTarget as HTMLElement).find('[name="startDateTime"]').val() as string;
+    const endDateTime: string = $(e.currentTarget as HTMLElement).find('[name="endDateTime"]').val() as string;
 
     try {
-      const response = await RequestHandler.post('/app/add-event', {
+      const response: AxiosResponse<any, any> = await RequestHandler.post('/app/add-event', {
         eventName,
         description,
         startDateTime,
         endDateTime,
       });
 
-      location.href = `/app/event/${response.data.event.id}`;
+      return location.href = `/app/event/${response.data.event.id}`;
     } catch (error: any) {
-      Swal.fire({
+      return Swal.fire({
         title: error.response.data.message,
         html: RequestHandler.errorHandler(error.response.data.reasons),
         icon: 'error',
@@ -31,19 +34,19 @@ export default class extends Controller {
     }
   }
 
-  copyJoinCode(e: any) {
-    navigator.clipboard.writeText($(e.target).text());
+  copyJoinCode(e: Event): Promise<SweetAlertResult<any>> {
+    navigator.clipboard.writeText($(e.currentTarget as HTMLElement).text());
 
-    CustomSweetAlert.Toast.fire({
+    return CustomSweetAlert.Toast.fire({
       icon: 'success',
       title: 'Le code d\'invitation a bien été copié !'
     });
   }
 
-  async joinEvent(e: any) {
+  async joinEvent(e: Event): Promise<SweetAlertResult<any> | "/app/home"> {
     e.preventDefault();
 
-    const joinCode: string = $(e.target).find('[name="joinCode"]').val() as string;
+    const joinCode: string = $(e.currentTarget as HTMLElement).find('[name="joinCode"]').val() as string;
 
     try {
       await RequestHandler.post('/app/join-event', { joinCode });
@@ -53,9 +56,9 @@ export default class extends Controller {
         text: 'Code valide'
       });
 
-      location.href = '/app/home';
+      return location.href = '/app/home';
     } catch (error: any) {
-      Swal.fire({
+      return Swal.fire({
         icon: 'error',
         title: error.response.data.message,
         html: RequestHandler.errorHandler(error.response.data.reasons)

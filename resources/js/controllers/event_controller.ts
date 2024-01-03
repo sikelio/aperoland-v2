@@ -16,11 +16,11 @@ export default class extends Controller {
   declare activeTabValue: number;
 
   connect(): void {
-    this.updateTabDisplay();
+    return this.updateTabDisplay();
   }
 
-  changeTab(event: Event): void {
-    const index: string | undefined = $(event.currentTarget as HTMLElement).attr('data-index');
+  changeTab(e: Event): void {
+    const index: string | undefined = $(e.currentTarget as HTMLElement).attr('data-index');
 
     if (index) {
       this.activeTabValue = parseInt(index);
@@ -29,7 +29,7 @@ export default class extends Controller {
   }
 
   updateTabDisplay(): void {
-    this.tabTargets.forEach((tab: HTMLElement, index: number) => {
+    this.tabTargets.forEach((tab: HTMLElement, index: number): void => {
       const isActive: boolean = index === this.activeTabValue;
 
       if (isActive && $(tab).find('button').text() === 'Chat') {
@@ -52,8 +52,8 @@ export default class extends Controller {
   async removeAttendee(e: Event) {
     e.preventDefault();
 
-    const eventId = $(e.target as HTMLElement).attr('data-event');
-    const userId = $(e.target as HTMLElement).attr('data-index');
+    const eventId: string = $(e.target as HTMLElement).attr('data-event') as string;
+    const userId: string = $(e.target as HTMLElement).attr('data-index') as string;
 
     Swal.fire({
       icon: 'question',
@@ -63,19 +63,19 @@ export default class extends Controller {
       confirmButtonColor: '#ff0000',
       cancelButtonText: 'Annuler',
       confirmButtonText: 'Supprimer'
-    }).then(async (result: SweetAlertResult<any>) => {
+    }).then(async (result: SweetAlertResult<any>): Promise<SweetAlertResult<any> | undefined> => {
       if (result.isConfirmed) {
         try {
           const response: AxiosResponse<any, any> = await RequestHandler.delete(`/app/event/${eventId}/remove-attendee`, { userId });
 
           $(`[data-index="${userId}"]`).remove();
 
-          CustomSweetAlert.Toast.fire({
+          return CustomSweetAlert.Toast.fire({
             icon: 'success',
             text: response.data.message
           });
         } catch (error: any) {
-          CustomSweetAlert.Toast.fire({
+          return CustomSweetAlert.Toast.fire({
             icon: 'error',
             title: 'Erreur de saisie',
             html: RequestHandler.errorHandler(error.response.data.reasons)
@@ -85,10 +85,10 @@ export default class extends Controller {
     });
   }
 
-  copyJoinCode(e: Event) {
+  copyJoinCode(e: Event): Promise<SweetAlertResult<any>> {
     navigator.clipboard.writeText($(e.target as HTMLElement).attr('data-code') as string);
 
-    CustomSweetAlert.Toast.fire({
+    return CustomSweetAlert.Toast.fire({
       icon: 'success',
       title: 'Le code d\'invitation a bien été copié !'
     });

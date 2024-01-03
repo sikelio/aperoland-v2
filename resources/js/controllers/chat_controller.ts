@@ -2,20 +2,22 @@ import { Controller } from '@hotwired/stimulus';
 import { io, Socket } from 'socket.io-client';
 import $ from 'jquery';
 
+import type { MessagePackage } from '../interfaces/chatbox';
+
 export default class extends Controller {
-  static targets = ['messages', 'input'];
+  static targets: string[] = ['messages', 'input'];
 
   declare readonly messagesTarget: HTMLElement;
   declare readonly inputTarget: HTMLInputElement;
 
-  declare currentUserId: string;
+  declare currentUserId: number;
 
   private socket: Socket;
 
   public async connect() {
-    const token = localStorage.getItem('chatToken');
+    const token: string | null = localStorage.getItem('chatToken');
 
-    this.currentUserId = $(this.element).attr('data-user') as string;
+    this.currentUserId = Number($(this.element).attr('data-user') as string);
     $(this.element).removeAttr('data-user');
 
     this.socket = io({
@@ -23,17 +25,17 @@ export default class extends Controller {
     });
 
     this.socket.emit('joinRoom', { room: this.getEventId(), token: localStorage.getItem('chatToken') });
-    this.socket.on('chat message', (msg) => this.addMessage(msg));
+    this.socket.on('chat message', (msg: MessagePackage): void => this.addMessage(msg));
 
-    document.addEventListener('chatTabSelected', () => {
+    document.addEventListener('chatTabSelected', (): void => {
       this.messagesTarget.scrollTo(0, this.messagesTarget.scrollHeight);
     });
   }
 
-  public sendMessage(e: Event) {
+  public sendMessage(e: Event): JQuery<HTMLInputElement> | undefined {
     e.preventDefault();
 
-    const message = $(this.inputTarget).val()?.trim();
+    const message: string = $(this.inputTarget).val()?.trim() as string;
 
     if (!message) {
       return;
@@ -44,23 +46,23 @@ export default class extends Controller {
       eventId: this.getEventId()
     });
 
-    $(this.inputTarget).val('');
+    return $(this.inputTarget).val('');
   }
 
-  private addMessage(msg) {
-    const isAuthor = msg.authorUserId == this.currentUserId;
+  private addMessage(msg: MessagePackage) {
+    const isAuthor: boolean = msg.authorUserId == this.currentUserId;
 
-    const item = $('<div>').addClass(`mb-2 ${isAuthor ? 'text-right': ''}`);
+    const item: JQuery<HTMLElement> = $('<div>').addClass(`mb-2 ${isAuthor ? 'text-right': ''}`);
 
-    const usernameSpan = $('<span>')
+    const usernameSpan: JQuery<HTMLElement> = $('<span>')
       .addClass('text-sm text-white')
       .text(msg.username);
 
-    const usernameDiv = $('<div>')
+    const usernameDiv: JQuery<HTMLElement> = $('<div>')
       .addClass(isAuthor ? 'text-right' : 'text-left')
       .append(usernameSpan);
 
-    const messageContent = $('<p>')
+    const messageContent: JQuery<HTMLElement> = $('<p>')
       .addClass(`${isAuthor ? 'bg-appYellow' : 'bg-gray-200'} ${isAuthor ? 'text-white' : 'text-gray-700'} rounded-lg py-2 px-4 inline-block`)
       .text(this.escapeHTML(msg.message));
 
@@ -70,18 +72,17 @@ export default class extends Controller {
     this.messagesTarget.scrollTo(0, this.messagesTarget.scrollHeight);
   }
 
-  private escapeHTML(str: string) {
-    const div = document.createElement('div');
-
-    $(div).append(document.createTextNode(str));
+  private escapeHTML(str: string | string[]): string {
+    const div: JQuery<HTMLElement> = $('<div>')
+      .append(document.createTextNode(str as string));
 
     return $(div).html();
   }
 
   private getEventId(): string {
-    const currentUrl = window.location.pathname;
-    const segments = currentUrl.split('/');
-    const eventId = segments.pop() || segments.pop();
+    const currentUrl: string = window.location.pathname;
+    const segments: string[] = currentUrl.split('/');
+    const eventId: string | undefined = segments.pop() || segments.pop();
 
     return eventId as string;
   }

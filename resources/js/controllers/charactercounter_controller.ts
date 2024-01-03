@@ -2,20 +2,21 @@ import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery'
 
 export default class extends Controller {
-  static targets = ['output'];
-  outputTarget: Element;
+  static targets: string[] = ['output'];
 
-  connect() {
-    const maxLength = $(this.element).find('[name="description"]').attr('maxLength') || 1000;
-    const currentLength = ($(this.element).find('[name="description"]').val() as string).length;
+  declare readonly outputTarget: HTMLElement;
 
-    $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
+  connect(): JQuery<Element> {
+    const maxLength: string | 1000 = $(this.element).find('[name="description"]').attr('maxLength') || 1000;
+    const currentLength: number = ($(this.element).find('[name="description"]').val() as string).length;
+
+    return $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
   }
 
-  update() {
-    const maxLength = $(this.element).find('[name="description"]').attr('maxLength') || 1000;
-    const currentLength = ($(this.element).find('[name="description"]').val() as string).length;
+  update(): JQuery<Element> {
+    const maxLength: string | 1000 = $(this.element).find('[name="description"]').attr('maxLength') || 1000;
+    const currentLength: number = ($(this.element).find('[name="description"]').val() as string).length;
 
-    $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
+    return $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
   }
 }

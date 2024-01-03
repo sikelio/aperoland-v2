@@ -3,32 +3,35 @@ import $ from 'jquery';
 import axios from 'axios';
 import CustomSweetAlert from '../lib/CustomSweetAlert';
 
+import type { SweetAlertResult } from 'sweetalert2';
+
 export default class extends Controller {
   static targets = ['menu', 'mobileMenu'];
-  menuTarget: Element;
-  mobileMenuTarget: Element;
 
-  toggleAvatarDropdown(e: any) {
+  declare readonly menuTarget: HTMLElement;
+  declare readonly mobileMenuTarget: HTMLElement;
+
+  toggleAvatarDropdown(e: Event): JQuery<HTMLElement> {
     e.preventDefault();
 
-    $(this.menuTarget).toggleClass('hidden');
+    return $(this.menuTarget).toggleClass('hidden');
   }
 
-  toggleMobileAvatarDropdown(e: any) {
+  toggleMobileAvatarDropdown(e: Event): JQuery<HTMLElement> {
     e.preventDefault();
 
-    $(this.mobileMenuTarget).toggleClass('hidden');
+    return $(this.mobileMenuTarget).toggleClass('hidden');
   }
 
-  async logout(e: any) {
+  async logout(e: Event): Promise<"/auth/login" | SweetAlertResult<any>> {
     e.preventDefault();
 
     try {
       await axios.post('/auth/logout');
 
-      location.href = '/auth/login';
+      return location.href = '/auth/login';
     } catch (error: any) {
-      CustomSweetAlert.Toast.fire({
+      return CustomSweetAlert.Toast.fire({
         icon: 'warning',
         text: 'Quelque chose s\'est mal passé lors de la déconnexion !'
       });
