@@ -6,16 +6,24 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('role_id');
+      table
+        .collate('utf8_unicode_ci');
 
-      table.string('name', 50).notNullable();
+      table
+          .increments('role_id');
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
-      table.timestamp('created_at', { useTz: true });
+      table
+        .collate('utf8_unicode_ci');
 
-      table.timestamp('updated_at', { useTz: true });
+      table
+        .string('name', 50)
+        .notNullable();
+
+      table
+        .timestamp('created_at', { useTz: true });
+
+      table
+        .timestamp('updated_at', { useTz: true });
     });
 
     this.defer(async (db) => {

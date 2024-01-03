@@ -7,6 +7,15 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table
+        .charset('utf8');
+
+      table
+        .engine('InnoDB');
+
+      table
+        .collate('utf8_unicode_ci');
+
+      table
         .increments('user_id')
         .primary();
 
@@ -34,9 +43,6 @@ export default class extends BaseSchema {
         .string('remember_me_token')
         .nullable();
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
       table
         .timestamp('created_at', { useTz: true });
 

@@ -6,6 +6,15 @@ export default class extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table
+        .charset('utf8');
+
+      table
+        .engine('InnoDB');
+
+      table
+        .collate('utf8_unicode_ci');
+
+      table
         .integer('user_id')
         .unsigned()
         .references('user_id')
@@ -22,9 +31,6 @@ export default class extends BaseSchema {
       table
         .unique(['user_id', 'event_id']);
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
       table.timestamp('created_at', { useTz: true })
         .defaultTo(this.now());
     })

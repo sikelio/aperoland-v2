@@ -6,6 +6,15 @@ export default class extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table
+        .charset('utf8');
+
+      table
+        .engine('InnoDB');
+
+      table
+        .collate('utf8_unicode_ci');
+
+      table
         .increments('message_id')
         .primary();
 
