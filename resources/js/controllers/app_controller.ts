@@ -23,6 +23,19 @@ export default class extends Controller {
     const endDateTime: string = $(e.currentTarget as HTMLElement)
       .find('[name="endDateTime"]')
       .val() as string;
+    const address: string = $(e.currentTarget as HTMLElement)
+      .find('[name="address"]')
+      .val() as string;
+    const lat: number = Number(
+      $(e.currentTarget as HTMLElement)
+        .find('#lat')
+        .text()
+    );
+    const long: number = Number(
+      $(e.currentTarget as HTMLElement)
+        .find('#long')
+        .text()
+    );
 
     try {
       const response: AxiosResponse<any, any> = await RequestHandler.post('/app/add-event', {
@@ -30,6 +43,9 @@ export default class extends Controller {
         description,
         startDateTime,
         endDateTime,
+        address: address === '' ? null : address,
+        lat: isNaN(lat) ? null : lat,
+        long: isNaN(long) ? null : long,
       });
 
       return (location.href = `/app/event/${response.data.event.id}`);
@@ -68,11 +84,11 @@ export default class extends Controller {
 
       return (location.href = '/app/home');
     } catch (error: any) {
-      return Swal.fire({
+      return CustomSweetAlert.Toast.fire({
         icon: 'error',
         title: error.response.data.message,
         html: RequestHandler.errorHandler(error.response.data.reasons),
-      });
+      })
     }
   }
 }

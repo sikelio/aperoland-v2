@@ -36,6 +36,15 @@ export default class Event extends BaseModel {
   @column({ columnName: 'join_code' })
   public joinCode: string;
 
+  @column({ columnName: 'address' })
+  public address: string;
+
+  @column({ columnName: 'lat' })
+  public lat: number;
+
+  @column({ columnName: 'long' })
+  public long: number;
+
   @belongsTo(() => User, {
     foreignKey: 'creator_id',
   })

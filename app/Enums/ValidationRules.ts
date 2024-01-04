@@ -5,6 +5,7 @@ enum ValidationRules {
   REQUIRED = 'required',
   DATE_FORMAT = 'date.format',
   NUMBER = 'number',
+  REQUIRE_IF_EXIST = 'requiredIfExists',
 }
 
 export default ValidationRules;
