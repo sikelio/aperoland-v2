@@ -13,10 +13,14 @@ export default class extends Controller {
 
   declare readonly tabTargets: HTMLElement[];
   declare readonly contentTargets: HTMLElement[];
+
   declare activeTabValue: number;
+  declare mapEvent: CustomEvent<unknown>;
 
   connect(): void {
-    return this.updateTabDisplay();
+    this.mapEvent = new CustomEvent('mapReload');
+
+    this.updateTabDisplay();
   }
 
   changeTab(e: Event): void {
@@ -25,6 +29,10 @@ export default class extends Controller {
     if (index) {
       this.activeTabValue = parseInt(index);
       this.updateTabDisplay();
+    }
+
+    if (index === '3') {
+      document.dispatchEvent(this.mapEvent);
     }
   }
 

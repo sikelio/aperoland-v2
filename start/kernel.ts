@@ -45,4 +45,5 @@ Server.middleware.registerNamed({
   auth: () => import('App/Middleware/Auth'),
   redirectIfAuthenticated: () => import('App/Middleware/RedirectIfAuthenticated'),
   eventHandler: () => import('App/Middleware/EventHandler'),
+  apiAuth: () => import('App/Middleware/ApiAuth'),
 });

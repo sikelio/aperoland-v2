@@ -9,13 +9,13 @@
 					Nom de l'apéro
 					<span class="text-red-600">*</span>
 				</label>
-				<input type="text" required name="eventName" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+				<input type="text" required name="eventName" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
 			</div>
 
-			<div data-controller="charactercounter">
+			<div data-controller="character">
 				<label class="font-bold text-white">Description</label>
-				<textarea name="description" data-action="input->charactercounter#update" maxlength="1000" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white"></textarea>
-        <span data-target="charactercounter.output" class="text-sm text-white float-right"></span>
+				<textarea name="description" data-action="input->character#update" maxlength="255" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white"></textarea>
+        <span data-target="character.output" class="text-sm text-white float-right"></span>
 			</div>
 
 			<div>
@@ -23,7 +23,7 @@
 					Début
 					<span class="text-red-600">*</span>
 				</label>
-				<input type="datetime-local" required name="startDateTime" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+				<input type="datetime-local" required name="startDateTime" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
 			</div>
 
 			<div>
@@ -31,7 +31,15 @@
 					Fin
 					<span class="text-red-600">*</span>
 				</label>
-				<input type="datetime-local" required name="endDateTime" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+				<input type="datetime-local" required name="endDateTime" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+			</div>
+
+			<div data-controller="location">
+				<label class="font-bold text-white">
+					Adresse de l'Apéro
+				</label>
+				<select data-target="location.select" name="address" class="w-full mt-2 px-1 py-0.5 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white">
+				</select>
 			</div>
 
 			<button class="w-full px-4 py-2 text-white font-medium bg-appBlueDark hover:bg-appBlueDarkLight active:bg-appBlueDark rounded-lg duration-150" >

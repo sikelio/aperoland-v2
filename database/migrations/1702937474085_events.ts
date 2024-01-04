@@ -17,7 +17,7 @@ export default class extends BaseSchema {
 
       table.string('event_name', 255).notNullable();
 
-      table.text('description').nullable();
+      table.string('description', 255).nullable();
 
       table.dateTime('start_datetime').notNullable();
 

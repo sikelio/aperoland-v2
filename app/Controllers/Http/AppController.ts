@@ -40,10 +40,21 @@ export default class AppController {
     }
 
     const eventSchema = schema.create({
-      eventName: schema.string({ trim: true }, [rules.maxLength(255), rules.minLength(5)]),
-      description: schema.string.optional({ trim: true }, [rules.maxLength(1000)]),
+      eventName: schema.string({ trim: true }, [
+        rules.maxLength(255), rules.minLength(5)
+      ]),
+      description: schema.string.optional({ trim: true }, [
+        rules.maxLength(1000)
+      ]),
       startDateTime: schema.date({}, []),
       endDateTime: schema.date({}, []),
+      address: schema.string.optional({ trim: true }, []),
+      lat: schema.number.optional([
+        rules.requiredIfExists('address')
+      ]),
+      long: schema.number.optional([
+        rules.requiredIfExists('address')
+      ]),
     });
 
     try {
@@ -52,10 +63,13 @@ export default class AppController {
       const event = await Event.create({
         eventName: request.input('eventName'),
         creatorId: auth.user!.id,
-        description: request.input('description'),
+        description: request.input('description') ? request.input('description') : null,
         startDateTime: request.input('startDateTime'),
         endDateTime: request.input('endDateTime'),
         joinCode: RandomGenerator.generateJoinCode(),
+        address: request.input('address') ? request.input('address') : null,
+        lat: request.input('lat') ? request.input('lat') : null,
+        long: request.input('long') ? request.input('long') : null,
       });
 
       await event.related('attendees').attach([auth.user!.id]);
@@ -117,6 +131,34 @@ export default class AppController {
               break;
           }
         }
+
+        if (
+          error.rule === ValidationRules.REQUIRE_IF_EXIST &&
+          error.message === ValidationMessages.REQUIRE_IF_EXIST
+        ) {
+          switch (error.field) {
+            case 'lat':
+              reasons.push("La latitude est requise si l'adresse est renseignée");
+              break;
+            case 'long':
+              reasons.push("La longitude est requise si l'adresse est renseignée");
+              break;
+          }
+        }
+
+        if (
+          error.rule === ValidationRules.NUMBER &&
+          error.message === ValidationMessages.NUMBER
+        ) {
+          switch (error.field) {
+            case 'lat':
+              reasons.push("La latitude soit être un nombre");
+              break;
+            case 'long':
+              reasons.push("La longitude soit être un nombre");
+              break;
+          }
+        }
       });
 
       return response.status(400).send({
@@ -135,20 +177,32 @@ export default class AppController {
     try {
       await request.validate({ schema: joinEventSchema });
 
-      const event = await Event.query().where('join_code', '=', request.input('joinCode'));
+      const event = await Event.query().where('join_code', '=', request.input('joinCode')).first();
 
-      if (event.length === 0) {
-        return response.status(404).send({
-          success: false,
-          message: 'Code non valide !',
-        });
+      if (event === null) {
+        return response
+          .status(404)
+          .send({
+            message: 'Code invalide',
+            reasons: ['L\'Apéro est inconnu'],
+            success: false
+          });
       }
 
       const user = await User.findOrFail(auth.user!.id);
-      await user.related('events').attach([event[0].id]);
+      await user.related('events').attach([event!.id]);
 
       return response.send(event);
     } catch (error: any) {
+      if (error === 'Exception: E_ROW_NOT_FOUND: Row not found') {
+        return response
+          .status(404)
+          .send({
+            message: 'Apéro non trouvé',
+            success: false
+          });
+      }
+
       let reasons: string[] = [];
 
       error.messages.errors.forEach((error: ValidationRule) => {
@@ -165,6 +219,7 @@ export default class AppController {
       });
 
       return response.status(400).send({
+        error,
         message: 'Erreur de saisie !',
         success: false,
         reasons,
