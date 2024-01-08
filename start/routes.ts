@@ -5,7 +5,7 @@ import './routes/app';
 import './routes/api';
 
 Route.get('/', async ({ response }) => {
-  return response.redirect('/auth/login');
+	return response.redirect('/auth/login');
 });
 
 Route.on('*').redirect('/auth/login');

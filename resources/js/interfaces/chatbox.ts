@@ -1,5 +1,5 @@
 export interface MessagePackage {
-  username: string;
-  message: string | string[];
-  authorUserId: number;
+	username: string;
+	message: string | string[];
+	authorUserId: number;
 }

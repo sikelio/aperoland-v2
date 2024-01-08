@@ -1,10 +1,10 @@
 {
-  "extends": "adonis-preset-ts/tsconfig.json",
-  "include": ["**/*.ts"],
-  "compilerOptions": {
-    "lib": ["DOM"],
-    "outDir": "build",
-    "rootDir": "./",
-    "sourceMap": true
-  }
+	"extends": "adonis-preset-ts/tsconfig.json",
+	"include": ["**/*.ts"],
+	"compilerOptions": {
+		"lib": ["DOM"],
+		"outDir": "build",
+		"rootDir": "./",
+		"sourceMap": true
+	}
 }
