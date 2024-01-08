@@ -2,7 +2,10 @@ import { Controller } from '@hotwired/stimulus';
 import { io, Socket } from 'socket.io-client';
 import $ from 'jquery';
 
+import CustomSweetAlert from '../lib/CustomSweetAlert';
+
 import type { MessagePackage } from '../interfaces/chatbox';
+import type { SweetAlertResult } from 'sweetalert2';
 
 export default class extends Controller {
   static targets: string[] = ['messages', 'input'];
@@ -13,6 +16,7 @@ export default class extends Controller {
   declare currentUserId: number;
 
   private socket: Socket;
+  private isConnected: boolean;
 
   public async connect() {
     const token: string | null = localStorage.getItem('chatToken');
@@ -29,14 +33,23 @@ export default class extends Controller {
       token: localStorage.getItem('chatToken'),
     });
     this.socket.on('chat message', (msg: MessagePackage): void => this.addMessage(msg));
+    this.socket.on('connect_error', () => { this.isConnected = false; });
 
     document.addEventListener('chatTabSelected', (): void => {
       this.messagesTarget.scrollTo(0, this.messagesTarget.scrollHeight);
     });
   }
 
-  public sendMessage(e: Event): JQuery<HTMLInputElement> | undefined {
+  public sendMessage(e: Event): JQuery<HTMLInputElement> | Promise<SweetAlertResult<any>> | undefined {
     e.preventDefault();
+
+    if (!localStorage.getItem('chatToken') || this.isConnected === false) {
+      return CustomSweetAlert.Toast.fire({
+        icon: 'error',
+        title: 'Erreur d\'authenfication',
+        text: 'Essayer de vous reconnecter !'
+      });
+    }
 
     const message: string = $(this.inputTarget).val()?.trim() as string;
 

@@ -86,12 +86,14 @@ export default class extends Controller {
     }
 
     try {
-      await RequestHandler.post('/auth/register', {
+      const response = await RequestHandler.post('/auth/register', {
         username,
         email,
         password,
         confirmPassword,
       });
+
+      localStorage.setItem('chatToken', response.data.token);
 
       return (location.href = '/app/home');
     } catch (error: any) {

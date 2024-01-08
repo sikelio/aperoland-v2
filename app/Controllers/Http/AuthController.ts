@@ -65,8 +65,13 @@ export default class AuthController {
 
       await auth.login(user);
 
+      const token = jwt.sign({ id: user.id, username: user.username }, Env.get('JWT_SECRET'), {
+        expiresIn: '24h',
+      });
+
       return response.send({
         message: 'Vous êtes maintenant connecté ! Redirection en cours...',
+        token: token,
         success: true,
       });
     } catch (error) {

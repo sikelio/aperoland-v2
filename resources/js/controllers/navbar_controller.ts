@@ -29,6 +29,8 @@ export default class extends Controller {
     try {
       await axios.post('/auth/logout');
 
+      localStorage.removeItem('chatToken');
+
       return (location.href = '/auth/login');
     } catch (error: any) {
       return CustomSweetAlert.Toast.fire({
