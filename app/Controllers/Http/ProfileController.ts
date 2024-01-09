@@ -10,4 +10,22 @@ export default class ProfilesController {
       user
     });
   }
+
+  public async deleteProfile({ auth, response }: HttpContextContract) {
+    try {
+      const user = await User.find(auth.user!.id);
+      await user!.delete();
+      await auth.logout();
+
+      return response.send({
+        success: true,
+        message: 'Account deleted!'
+      });
+    } catch (error: any) {
+      return response.status(500).send({
+        success: false,
+        message: 'Something went wrong!'
+      });
+    }
+  }
 }
