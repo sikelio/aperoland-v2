@@ -2,6 +2,9 @@
 	"name": "aperoland-v2",
 	"version": "1.0.0",
 	"private": true,
+  "repository": "https://github.com/sikelio/aperoland-v2",
+  "author": "Sikelio <contact@sikelio.wtf>",
+  "license": "LGPL-3.0-only",
 	"scripts": {
 		"dev": "node ace serve --watch",
 		"build": "node ace build --production",
