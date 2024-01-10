@@ -99,7 +99,7 @@
       </div>
 
       <div data-controller="chat" data-event-target="content" class="tab-content" data-user="{{ userId }}">
-        <div id="chatbox" class="p-4 h-96 overflow-y-auto" data-chat-target="messages">
+        <div id="chatbox" class="p-4 overflow-y-auto max-h-[500px]" data-chat-target="messages">
           @each(message in event.messages)
             <div class="mb-2">
               <div class="{{ message.isAuthor ? 'text-right' : 'text-left' }}">
@@ -127,7 +127,7 @@
       </div>
 
       <div data-controller="leaflet" data-leaflet-lat-value="{{ event.lat }}" data-leaflet-long-value="{{ event.long }}" data-event-target="content" class="tab-content">
-        <div data-target="leaflet.map" id="map" class="mt-4"></div>
+        <div data-target="leaflet.map" id="map" class="mt-4 h-[550px]"></div>
       </div>
     </div>
   </div>

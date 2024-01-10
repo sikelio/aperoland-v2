@@ -4,8 +4,6 @@ import 'leaflet/dist/leaflet.css';
 import '../css/app.css';
 import '../css/global.css';
 import '../css/home.css';
-import '../css/chat.css';
 import '../css/location.css';
-import '../css/map.css';
 
 import './bootstrap';
