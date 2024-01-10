@@ -22,4 +22,8 @@ export default class RequestHandler {
 			data: data,
 		});
 	}
+
+  public static patch(url: string, data: any = {}): Promise<AxiosResponse<any, any>> {
+    return axios.patch(url, data);
+  }
 }
