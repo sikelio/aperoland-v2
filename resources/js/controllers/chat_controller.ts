@@ -37,7 +37,7 @@ export default class extends Controller {
 			this.isConnected = false;
 		});
 
-		document.addEventListener('chatTabSelected', (): void => {
+		document.addEventListener('chatScroll', (): void => {
 			this.messagesTarget.scrollTo(0, this.messagesTarget.scrollHeight);
 		});
 	}

@@ -16,9 +16,11 @@ export default class extends Controller {
 
 	declare activeTabValue: number;
 	declare mapEvent: CustomEvent<unknown>;
+	declare chatEvent: CustomEvent<unknown>;
 
 	connect(): void {
 		this.mapEvent = new CustomEvent('mapReload');
+    this.chatEvent = new CustomEvent('chatScroll');
 
 		this.updateTabDisplay();
 	}
@@ -31,22 +33,19 @@ export default class extends Controller {
 			this.updateTabDisplay();
 		}
 
-		if (index === '3') {
-			document.dispatchEvent(this.mapEvent);
-		}
+    switch (index) {
+      case '2':
+        document.dispatchEvent(this.chatEvent);
+        break;
+      case '3':
+        document.dispatchEvent(this.mapEvent);
+        break;
+    }
 	}
 
 	updateTabDisplay(): void {
 		this.tabTargets.forEach((tab: HTMLElement, index: number): void => {
 			const isActive: boolean = index === this.activeTabValue;
-
-			if (isActive && $(tab).find('button').text() === 'Chat') {
-				const chatEvent: CustomEvent<unknown> = new CustomEvent('chatTabSelected', {
-					bubbles: true,
-				});
-
-				tab.dispatchEvent(chatEvent);
-			}
 
 			$(tab).toggleClass('border-appYellow', isActive);
 			$(tab).toggleClass('text-appYellow', isActive);
