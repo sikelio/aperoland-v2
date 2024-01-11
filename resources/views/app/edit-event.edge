@@ -3,18 +3,21 @@
 
 @section('body')
 	<div data-controller="app">
-		<form class="space-y-5 px-12 pt-12" data-action="submit->app#handleNewEvent">
+		<form class="space-y-5 px-12 pt-12" data-action="submit->app#handleEditEvent">
 			<div>
 				<label class="font-bold text-white">
 					Nom de l'apéro
 					<span class="text-red-600">*</span>
 				</label>
-				<input type="text" required name="eventName" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+
+				<input type="text" value="{{ event.eventName }}" required name="eventName" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
 			</div>
 
 			<div data-controller="character">
 				<label class="font-bold text-white">Description</label>
-				<textarea name="description" data-action="input->character#update" maxlength="255" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white"></textarea>
+
+				<textarea name="description" data-action="input->character#update" maxlength="255" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white">{{ event.description }}</textarea>
+
         <span data-target="character.output" class="text-sm text-white float-right"></span>
 			</div>
 
@@ -23,7 +26,8 @@
 					Début
 					<span class="text-red-600">*</span>
 				</label>
-				<input type="datetime-local" required name="startDateTime" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+
+				<input type="datetime-local" value="{{ event.tempStart }}" required name="startDateTime" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
 			</div>
 
 			<div>
@@ -31,19 +35,22 @@
 					Fin
 					<span class="text-red-600">*</span>
 				</label>
-				<input type="datetime-local" required name="endDateTime" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
+
+				<input type="datetime-local" value="{{ event.tempEnd }}" required name="endDateTime" class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white" />
 			</div>
 
-			<div data-controller="location">
+			<div data-controller="editlocation">
 				<label class="font-bold text-white">
 					Adresse de l'Apéro
 				</label>
-				<select data-target="location.select" name="address" class="w-full mt-2 px-1 py-0.5 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white">
+
+				<select data-target="editlocation.select" name="address" class="w-full mt-2 px-1 py-0.5 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white">
+          {{-- <option value="{{ event.address }}">{{ event.address }}</option> --}}
 				</select>
 			</div>
 
 			<button class="w-full px-4 py-2 text-white font-medium bg-appBlueDark hover:bg-appBlueDarkLight active:bg-appBlueDark rounded-lg duration-150" >
-				Créer mon Apéro
+				Modifier mon Apéro
 			</button>
 		</form>
 	</div>

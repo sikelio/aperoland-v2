@@ -63,15 +63,35 @@ export default class Event extends BaseModel {
 	public messages: HasMany<typeof ChatMessage>;
 
 	private tempUserId: number;
+  private tempStart: string;
+  private tempEnd: string;
 
 	public setTempUserId(userId: number) {
 		this.tempUserId = userId;
 	}
 
+  public setTempStart(date: string) {
+    this.tempStart = date;
+  }
+
+  public setTempEnd(date: string) {
+    this.tempEnd = date;
+  }
+
 	@computed()
-	public get isCreator() {
+	public get isCreator(): boolean {
 		return this.creatorId === this.tempUserId;
 	}
+
+  @computed()
+  public get tempStartDatetime(): string {
+    return this.tempStart;
+  }
+
+  @computed()
+  public get tempEndDatetime(): string {
+    return this.tempEnd;
+  }
 
 	@column.dateTime({ autoCreate: true })
 	public createdAt: DateTime;

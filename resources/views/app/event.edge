@@ -28,7 +28,7 @@
         </li>
 
         <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
-          <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="3">Localisation</button>
+          <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="3" @unless(event.address) disabled @end>Localisation</button>
         </li>
 
         @if(event.isCreator)

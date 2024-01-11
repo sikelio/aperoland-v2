@@ -6,6 +6,7 @@ import CustomSweetAlert from '../lib/CustomSweetAlert';
 
 import type { AxiosResponse } from 'axios';
 import type { SweetAlertResult } from 'sweetalert2';
+import EventHelper from '../lib/EventHelper';
 
 export default class extends Controller {
 	async handleNewEvent(e: Event): Promise<string | SweetAlertResult<any>> {
@@ -44,8 +45,8 @@ export default class extends Controller {
 				startDateTime,
 				endDateTime,
 				address: address === '' ? null : address,
-				lat: isNaN(lat) ? null : lat,
-				long: isNaN(long) ? null : long,
+				lat: address === '' ? null : (isNaN(lat) ? null : lat),
+				long: address === '' ? null : (isNaN(long) ? null : long),
 			});
 
 			return (location.href = `/app/event/${response.data.event.id}`);
@@ -57,6 +58,58 @@ export default class extends Controller {
 			});
 		}
 	}
+
+  async handleEditEvent(e: Event) {
+    e.preventDefault();
+
+    const eventName: string = $(e.currentTarget as HTMLElement)
+			.find('[name="eventName"]')
+			.val() as string;
+		const description: string = $(e.currentTarget as HTMLElement)
+			.find('[name="description"]')
+			.val() as string;
+		const startDateTime: string = $(e.currentTarget as HTMLElement)
+			.find('[name="startDateTime"]')
+			.val() as string;
+		const endDateTime: string = $(e.currentTarget as HTMLElement)
+			.find('[name="endDateTime"]')
+			.val() as string;
+		const address: string = $(e.currentTarget as HTMLElement)
+			.find('[name="address"]')
+			.val() as string;
+		const lat: number = Number(
+			$(e.currentTarget as HTMLElement)
+				.find('#lat')
+				.text()
+		);
+		const long: number = Number(
+			$(e.currentTarget as HTMLElement)
+				.find('#long')
+				.text()
+		);
+
+    const eventId = EventHelper.getEventIdByRegex();
+
+    try {
+			const response: AxiosResponse<any, any> = await RequestHandler.put(`/app/event/${eventId}/edit`, {
+				eventName,
+				description,
+				startDateTime,
+				endDateTime,
+				address: address === '' ? null : address,
+				lat: address === '' ? null : (isNaN(lat) ? null : lat),
+				long: address === '' ? null : (isNaN(long) ? null : long),
+			});
+
+			return (location.href = `/app/event/${response.data.event.id}`);
+		} catch (error: any) {
+			return CustomSweetAlert.Toast.fire({
+				title: error.response.data.message,
+				html: error.response.data.reasons ? RequestHandler.errorHandler(error.response.data.reasons) : '',
+				icon: 'error',
+			});
+		}
+  }
 
 	copyJoinCode(e: Event): Promise<SweetAlertResult<any>> {
 		navigator.clipboard.writeText($(e.currentTarget as HTMLElement).text());

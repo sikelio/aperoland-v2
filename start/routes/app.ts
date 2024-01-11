@@ -14,7 +14,11 @@ Route.group(() => {
 
     Route.get('/:id/edit', 'AppController.getEditEvent').as('app.edit.event.get');
 
+    Route.get('/:id/location', 'AppController.getEventLocation').middleware('eventHandler');
+
     Route.delete('/:id/delete', 'AppController.deleteEvent');
+
+    Route.put('/:id/edit', 'AppController.editEvent');
 
     Route.delete('/:id/remove-attendee', 'AppController.deleteAttendeeFromEvent').as('app.remove.attendee.delete');
   }).prefix('/event');

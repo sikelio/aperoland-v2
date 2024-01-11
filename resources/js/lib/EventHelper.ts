@@ -6,4 +6,12 @@ export default class EventHelper {
 
 		return eventId as string;
   }
+
+  public static getEventIdByRegex(): string {
+    const regex = /\d+/gm;
+    const str = `/app/event/2/edit`;
+    const result = regex.exec(str);
+
+    return result![0];
+  }
 }

@@ -28,8 +28,26 @@ export default class AppController {
 		return view.render('app/new-event');
 	}
 
-  public getEditEvent({ view }: HttpContextContract) {
-    return view.render('app/edit-event');
+  public async getEditEvent({ view, params, auth, response }: HttpContextContract) {
+    const eventId = params.id;
+
+    try {
+      const event = await Event.findOrFail(eventId);
+      event.setTempUserId(auth.user!.id);
+
+      if (event.isCreator === false) {
+        return response.redirect().toRoute('app.event.get', { id: eventId });
+      }
+
+      event.setTempStart(event.startDateTime.toString().slice(0,16));
+      event.setTempEnd(event.endDateTime.toString().slice(0,16));
+
+      return view.render('app/edit-event', {
+        event: event
+      });
+    } catch (error: any) {
+      return response.redirect().toRoute('app.event.get', { id: eventId });
+    }
   }
 
 	public async postAddEvent({ request, response, auth }: HttpContextContract) {
@@ -162,6 +180,142 @@ export default class AppController {
 		}
 	}
 
+  public async editEvent({ request, response, auth, params }: HttpContextContract) {
+    try {
+      const event = await Event.findOrFail(params.id);
+      event.setTempUserId(auth.user!.id);
+
+      if (!event.isCreator) {
+        return response.status(403).send({
+          message: 'Vous n\'êtes pas le créateur de cet Apéro',
+          success: false
+        });
+      }
+
+      if (new Date(request.input('startDateTime')) >= new Date(request.input('endDateTime'))) {
+        return response.status(400).send({
+          message: 'Erreur de saisie !',
+          success: false,
+          reasons: [
+            "Vous ne pouvez pas modifier un Apéro avec une date de début supérieure à la date de fin !",
+          ],
+        });
+      }
+
+      const eventSchema = schema.create({
+        eventName: schema.string({ trim: true }, [rules.maxLength(255), rules.minLength(5)]),
+        description: schema.string.optional({ trim: true }, [rules.maxLength(1000)]),
+        startDateTime: schema.date({}, []),
+        endDateTime: schema.date({}, []),
+        address: schema.string.optional({ trim: true }, []),
+        lat: schema.number.optional([rules.requiredIfExists('address')]),
+        long: schema.number.optional([rules.requiredIfExists('address')]),
+      });
+
+			await request.validate({ schema: eventSchema });
+
+      event.eventName = request.input('eventName');
+      event.description = request.input('description');
+      event.startDateTime = request.input('startDateTime');
+      event.endDateTime = request.input('endDateTime');
+      event.address = request.input('address');
+      event.lat = request.input('lat');
+      event.long = request.input('long');
+
+      await event.save();
+
+			return response.send({ message: 'Apéro crée', event });
+		} catch (error) {
+			let reasons: string[] = [];
+
+			error.messages.errors.forEach((error: ValidationRule) => {
+				if (
+					error.rule === ValidationRules.MAX_LENGTH &&
+					error.message === ValidationMessages.MAX_LENGTH
+				) {
+					switch (error.field) {
+						case 'eventName':
+							reasons.push("Le nom de l'Apéro est trop long (255 caractères max.)");
+							break;
+						case 'description':
+							reasons.push("La description de l'Apéro est trop longue (1000 caractères max)");
+							break;
+					}
+				}
+
+				if (
+					error.rule === ValidationRules.MIN_LENGTH &&
+					error.message === ValidationMessages.MIN_LENGTH
+				) {
+					switch (error.field) {
+						case 'eventName':
+							reasons.push("Le nom de l'Apéro est trop court (5 caractères min.)");
+							break;
+					}
+				}
+
+				if (
+					error.rule === ValidationRules.REQUIRED &&
+					error.message === ValidationMessages.REQUIRED
+				) {
+					switch (error.field) {
+						case 'eventName':
+							reasons.push("Le nom de l'Apéro est requis");
+							break;
+						case 'startDateTime':
+							reasons.push("La date et l'heure de début de l'Apéro sont requis");
+							break;
+						case 'endDateTime':
+							reasons.push("La date et l'heure de fin de l'Apéro sont requis");
+							break;
+					}
+				}
+
+				if (error.rule === ValidationRules.DATE_FORMAT) {
+					switch (error.field) {
+						case 'startDateTime':
+							reasons.push("La date de début de l'Apéro n'est pas dans un format reconnus");
+							break;
+						case 'endDateTime':
+							reasons.push("La date de fin de l'Apéro n'est pas dans un format reconnus");
+							break;
+					}
+				}
+
+				if (
+					error.rule === ValidationRules.REQUIRE_IF_EXIST &&
+					error.message === ValidationMessages.REQUIRE_IF_EXIST
+				) {
+					switch (error.field) {
+						case 'lat':
+							reasons.push("La latitude est requise si l'adresse est renseignée");
+							break;
+						case 'long':
+							reasons.push("La longitude est requise si l'adresse est renseignée");
+							break;
+					}
+				}
+
+				if (error.rule === ValidationRules.NUMBER && error.message === ValidationMessages.NUMBER) {
+					switch (error.field) {
+						case 'lat':
+							reasons.push('La latitude soit être un nombre');
+							break;
+						case 'long':
+							reasons.push('La longitude soit être un nombre');
+							break;
+					}
+				}
+			});
+
+			return response.status(400).send({
+				message: 'Erreur de saisie !',
+				success: false,
+				reasons: reasons,
+			});
+		}
+  }
+
 	public async postJoinEvent({ response, request, auth }: HttpContextContract) {
 		const joinEventSchema = schema.create({
 			joinCode: schema.string({ trim: true }, []),
@@ -228,6 +382,9 @@ export default class AppController {
 				attendee.setTempUserId(auth.user!.id);
 				attendee.setTempCreatorUserId(event.creatorId);
 			});
+
+      event.lat = event.lat ? event.lat : 0;
+      event.long = event.long ? event.long : 0;
 
 			return view.render('app/event', {
 				event,
@@ -332,6 +489,25 @@ export default class AppController {
       return response.status(500).send({
         success: false,
         message: 'Something went wrong',
+      });
+    }
+  }
+
+  public async getEventLocation({ response, params }: HttpContextContract) {
+    const eventId = params.id;
+
+    try {
+      const event = await Event.findOrFail(eventId);
+
+      return response.send({
+        address: event.address,
+        lat: event.lat,
+        long: event.long
+      });
+    } catch (error: any) {
+      return response.status(500).send({
+        message: 'Something went wrong',
+        success: false
       });
     }
   }
