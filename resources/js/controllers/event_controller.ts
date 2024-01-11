@@ -1,8 +1,10 @@
 import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
+import Swal from 'sweetalert2';
+
 import RequestHandler from '../lib/RequestHandler';
 import CustomSweetAlert from '../lib/CustomSweetAlert';
-import Swal from 'sweetalert2';
+import EventHelper from '../lib/EventHelper';
 
 import type { SweetAlertResult } from 'sweetalert2';
 import type { AxiosResponse } from 'axios';
@@ -61,7 +63,7 @@ export default class extends Controller {
 	async removeAttendee(e: Event): Promise<void> {
 		e.preventDefault();
 
-		const eventId: string = $(e.target as HTMLElement).attr('data-event') as string;
+		const eventId: string = EventHelper.getEventId();
 		const userId: string = $(e.target as HTMLElement).attr('data-index') as string;
 
 		Swal.fire({
@@ -105,4 +107,34 @@ export default class extends Controller {
 			title: "Le code d'invitation a bien été copié !",
 		});
 	}
+
+  async deleteEvent(e: Event): Promise<void> {
+    e.preventDefault();
+
+    Swal.fire({
+      icon: 'question',
+			title: 'Confimation',
+			text: 'Voulez vous vraiment supprimer L\'apéro ?',
+			showCancelButton: true,
+			confirmButtonColor: '#ff0000',
+			cancelButtonText: 'Annuler',
+			confirmButtonText: 'Supprimer',
+    }).then(async (result: SweetAlertResult<any>): Promise<SweetAlertResult<any> | "/app/home" | undefined> => {
+      if (result.isConfirmed) {
+        const eventId: string = EventHelper.getEventId();
+
+        try {
+					await RequestHandler.delete(`/app/event/${eventId}/delete`);
+
+					return location.href = '/app/home';
+				} catch (error: any) {
+					return CustomSweetAlert.Toast.fire({
+						icon: 'error',
+						title: 'Erreur de saisie',
+						html: RequestHandler.errorHandler(error.response.data.reasons),
+					});
+				}
+      }
+    });
+  }
 }

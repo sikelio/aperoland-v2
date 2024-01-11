@@ -28,6 +28,10 @@ export default class AppController {
 		return view.render('app/new-event');
 	}
 
+  public getEditEvent({ view }: HttpContextContract) {
+    return view.render('app/edit-event');
+  }
+
 	public async postAddEvent({ request, response, auth }: HttpContextContract) {
 		if (new Date(request.input('startDateTime')) >= new Date(request.input('endDateTime'))) {
 			return response.status(400).send({
@@ -303,4 +307,32 @@ export default class AppController {
 			});
 		}
 	}
+
+  public async deleteEvent({ params, response, auth }: HttpContextContract) {
+    const eventId = params.id;
+
+    try {
+      const event = await Event.findOrFail(eventId);
+      event.setTempUserId(auth.user!.id);
+
+      if (!event.isCreator) {
+        return response.status(403).send({
+          message: "Vous n'êtes pas autorisé à effectuer cette action",
+          success: false,
+        });
+      }
+
+      await event.delete();
+
+      return response.send({
+				message: 'Apéro supprimé',
+				success: true,
+			});
+    } catch (error: any) {
+      return response.status(500).send({
+        success: false,
+        message: 'Something went wrong',
+      });
+    }
+  }
 }

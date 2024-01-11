@@ -3,6 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import $ from 'jquery';
 
 import CustomSweetAlert from '../lib/CustomSweetAlert';
+import EventHelper from '../lib/EventHelper';
 
 import type { MessagePackage } from '../interfaces/chatbox';
 import type { SweetAlertResult } from 'sweetalert2';
@@ -29,7 +30,7 @@ export default class extends Controller {
 		});
 
 		this.socket.emit('joinRoom', {
-			room: this.getEventId(),
+			room: EventHelper.getEventId(),
 			token: localStorage.getItem('chatToken'),
 		});
 		this.socket.on('chat message', (msg: MessagePackage): void => this.addMessage(msg));
@@ -63,7 +64,7 @@ export default class extends Controller {
 
 		this.socket.emit('chat message', {
 			msg: message,
-			eventId: this.getEventId(),
+			eventId: EventHelper.getEventId(),
 		});
 
 		return $(this.inputTarget).val('');
@@ -100,13 +101,5 @@ export default class extends Controller {
 		const div: JQuery<HTMLElement> = $('<div>').append(document.createTextNode(str as string));
 
 		return $(div).html();
-	}
-
-	private getEventId(): string {
-		const currentUrl: string = window.location.pathname;
-		const segments: string[] = currentUrl.split('/');
-		const eventId: string | undefined = segments.pop() || segments.pop();
-
-		return eventId as string;
 	}
 }
