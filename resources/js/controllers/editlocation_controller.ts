@@ -1,13 +1,33 @@
 import { Controller } from '@hotwired/stimulus';
+
 import TomSelect from 'tom-select';
+import EventHelper from '../lib/EventHelper';
+import RequestHandler from '../lib/RequestHandler';
+
+import type { AxiosResponse } from 'axios';
 
 export default class extends Controller {
-	public static targets: string[] = ['select'];
+  public static targets: string[] = ['select'];
 
 	declare readonly selectTarget: HTMLSelectElement;
 
-	public connect(): void {
-		new TomSelect(this.selectTarget, {
+  async connect(): Promise<string | void> {
+    const eventId = EventHelper.getEventIdByRegex();
+
+    try {
+      const response: AxiosResponse<any, any> = await RequestHandler.get(`/app/event/${eventId}/location`);
+
+      return this.generate(response.data.address, response.data.lat, response.data.long)
+    } catch (error: any) {
+      return location.href = `/app/event/${eventId}`;
+    }
+  }
+
+  private generate(address: string, lat: string, long: string): void {
+    const initData = { freeformAddress: address, coordinates: [lat, long] };
+
+    let select = new TomSelect(this.selectTarget, {
+      items: [initData.freeformAddress],
 			valueField: 'freeformAddress',
 			labelField: 'freeformAddress',
 			searchField: ['freeformAddress'],
@@ -57,5 +77,8 @@ export default class extends Controller {
 				},
 			},
 		});
-	}
+
+    select.addOption(initData);
+    select.addItem(initData.freeformAddress);
+  }
 }

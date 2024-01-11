@@ -2,37 +2,28 @@ import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
 
 export default class extends Controller {
-  static targets: string[] = ['output'];
+	static targets: string[] = ['output'];
 
-  declare readonly outputTarget: HTMLElement;
+	declare readonly outputTarget: HTMLElement;
 
-  connect(): JQuery<Element> {
-    const maxLength: string | 255 =
-      $(this.element).find('[name="description"]').attr('maxLength') || 255;
-    const currentLength: number = ($(this.element).find('[name="description"]').val() as string)
-      .length;
+	private readonly maxLength: number = 255;
 
-    if (currentLength > 255 || currentLength < 0) {
-      $(this.outputTarget).removeClass('text-white').addClass('text-red-600');
-    } else {
-      $(this.outputTarget).removeClass('text-red-600').addClass('text-white');
-    }
+	public connect(): void {
+		this.update();
+	}
 
-    return $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
-  }
+	public update(): void {
+		const currentLength: number = ($(this.element).find('[name="description"]').val() as string)
+			.length;
 
-  update(): JQuery<Element> {
-    const maxLength: string | 255 =
-      $(this.element).find('[name="description"]').attr('maxLength') || 255;
-    const currentLength: number = ($(this.element).find('[name="description"]').val() as string)
-      .length;
+		this.applyColor(currentLength);
 
-    if (currentLength > 255 || currentLength < 0) {
-      $(this.outputTarget).removeClass('text-white').addClass('text-red-600');
-    } else {
-      $(this.outputTarget).removeClass('text-red-600').addClass('text-white');
-    }
+		$(this.outputTarget).text(`${currentLength} / ${this.maxLength}`);
+	}
 
-    return $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
-  }
+	private applyColor(currentLength: number): void {
+		currentLength > 255 || currentLength < 0
+			? $(this.outputTarget).removeClass('text-white').addClass('text-red-600')
+			: $(this.outputTarget).removeClass('text-red-600').addClass('text-white');
+	}
 }

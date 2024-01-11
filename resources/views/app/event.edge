@@ -28,8 +28,14 @@
         </li>
 
         <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
-          <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="3">Localisation</button>
+          <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="3" @unless(event.address) disabled @end>Localisation</button>
         </li>
+
+        @if(event.isCreator)
+          <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
+            <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="4">Paramètres</button>
+          </li>
+        @end
       </ul>
 
       <div data-event-target="content" class="tab-content">Infos</div>
@@ -99,11 +105,17 @@
       </div>
 
       <div data-controller="chat" data-event-target="content" class="tab-content" data-user="{{ userId }}">
-        <div id="chatbox" class="p-4 h-96 overflow-y-auto" data-chat-target="messages">
+        <div id="chatbox" class="p-4 overflow-y-auto max-h-[500px]" data-chat-target="messages">
           @each(message in event.messages)
             <div class="mb-2">
               <div class="{{ message.isAuthor ? 'text-right' : 'text-left' }}">
-                <span class="text-sm text-white">{{ message.user.username }}</span>
+                <span class="text-sm text-white">
+                  @unless(message.user)
+                    Utilisateur supprimé
+                  @else
+                    {{ message.user.username }}
+                  @end
+                </span>
               </div>
               <div class="{{ message.isAuthor ? 'text-right' : '' }}">
                 <p class="{{ message.isAuthor ? 'bg-appYellow text-white' : 'bg-gray-200 text-gray-700' }}  rounded-lg py-2 px-4 inline-block">
@@ -121,7 +133,47 @@
       </div>
 
       <div data-controller="leaflet" data-leaflet-lat-value="{{ event.lat }}" data-leaflet-long-value="{{ event.long }}" data-event-target="content" class="tab-content">
-        <div data-target="leaflet.map" id="map" class="mt-4"></div>
+        <div data-target="leaflet.map" id="map" class="mt-4 h-[550px]"></div>
+      </div>
+
+      <div data-event-target="content" class="tab-content">
+
+        <div class="mx-auto max-w-7xl">
+          <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 border-b-[1px] border-white/5">
+            <div>
+              <h2 class="text-base font-semibold leading-7 text-white">Informations de l'évenèment</h2>
+
+              <p class="mt-1 text-sm leading-6 text-white">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut rhoncus lacinia lacinia. Nunc porttitor pretium nulla, ac ornare et.
+              </p>
+            </div>
+
+            <div class="md:col-span-2">
+              <div class="mt-8 flex">
+                <a href="{{ route('app.edit.event.get', { id: event.id }) }}" class="rounded-md bg-indigo-500 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-within:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                  Changer les informations de l'Apéro
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3">
+            <div>
+              <h2 class="text-base font-semibold leading-7 text-white">Suppression de l'Apéro</h2>
+
+              <p class="mt-1 text-sm leading-6 text-white">
+                <span class="font-bold">Attention cette action est irréversible !</span>
+              </p>
+            </div>
+
+            <form class="md:col-span-2" data-action="submit->event#deleteEvent">
+              <div class="mt-8 flex">
+                <button type="submit" class="rounded-md bg-red-500 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-within:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500">Supprimer l'Apéro</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

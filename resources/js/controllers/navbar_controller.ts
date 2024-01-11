@@ -6,35 +6,37 @@ import CustomSweetAlert from '../lib/CustomSweetAlert';
 import type { SweetAlertResult } from 'sweetalert2';
 
 export default class extends Controller {
-  static targets = ['menu', 'mobileMenu'];
+	static targets = ['menu', 'mobileMenu'];
 
-  declare readonly menuTarget: HTMLElement;
-  declare readonly mobileMenuTarget: HTMLElement;
+	declare readonly menuTarget: HTMLElement;
+	declare readonly mobileMenuTarget: HTMLElement;
 
-  toggleAvatarDropdown(e: Event): JQuery<HTMLElement> {
-    e.preventDefault();
+	toggleAvatarDropdown(e: Event): void {
+		e.preventDefault();
 
-    return $(this.menuTarget).toggleClass('hidden');
-  }
+		$(this.menuTarget).toggleClass('hidden');
+	}
 
-  toggleMobileAvatarDropdown(e: Event): JQuery<HTMLElement> {
-    e.preventDefault();
+	toggleMobileAvatarDropdown(e: Event): void {
+		e.preventDefault();
 
-    return $(this.mobileMenuTarget).toggleClass('hidden');
-  }
+		$(this.mobileMenuTarget).toggleClass('hidden');
+	}
 
-  async logout(e: Event): Promise<'/auth/login' | SweetAlertResult<any>> {
-    e.preventDefault();
+	async logout(e: Event): Promise<'/auth/login' | SweetAlertResult<any>> {
+		e.preventDefault();
 
-    try {
-      await axios.post('/auth/logout');
+		try {
+			await axios.post('/auth/logout');
 
-      return (location.href = '/auth/login');
-    } catch (error: any) {
-      return CustomSweetAlert.Toast.fire({
-        icon: 'warning',
-        text: "Quelque chose s'est mal passé lors de la déconnexion !",
-      });
-    }
-  }
+			localStorage.removeItem('chatToken');
+
+			return (location.href = '/auth/login');
+		} catch (error: any) {
+			return CustomSweetAlert.Toast.fire({
+				icon: 'warning',
+				text: "Quelque chose s'est mal passé lors de la déconnexion !",
+			});
+		}
+	}
 }

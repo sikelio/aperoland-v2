@@ -52,14 +52,42 @@
             <input type="email" required name="email" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
           </div>
 
-          <div>
-            <label class="font-medium text-appBlueDark">Mot de passe</label>
-            <input type="password" required name="password" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
-          </div>
+          <div data-controller="strength">
+            <div>
+              <label class="font-medium text-appBlueDark">Mot de passe</label>
+              <input data-strength-target="password" data-action="input->strength#checkStrength" type="password" required name="password" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
+            </div>
 
-          <div>
-            <label class="font-medium text-appBlueDark">Confirmation mot de passe</label>
-            <input type="password" required name="confirmPassword" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
+            <div>
+              <label class="font-medium text-appBlueDark">Confirmation mot de passe</label>
+              <input type="password" required name="confirmPassword" class="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg" />
+            </div>
+
+            <div class="mt-8">
+              <span class="font-medium text-appBlueDark">Force du mot de passe</span>
+
+              <div class="flex -mx-1 mt-2" id="strengthBar">
+                <div class="w-1/5 px-1 mini-bar">
+                  <div data-strength-target="strengthBar" class="h-2 rounded-xl transition-colors bg-gray-200"></div>
+                </div>
+
+                <div class="w-1/5 px-1 mini-bar">
+                  <div data-strength-target="strengthBar" class="h-2 rounded-xl transition-colors bg-gray-200"></div>
+                </div>
+
+                <div class="w-1/5 px-1 mini-bar">
+                  <div data-strength-target="strengthBar" class="h-2 rounded-xl transition-colors bg-gray-200"></div>
+                </div>
+
+                <div class="w-1/5 px-1 mini-bar">
+                  <div data-strength-target="strengthBar" class="h-2 rounded-xl transition-colors bg-gray-200"></div>
+                </div>
+
+                <div class="w-1/5 px-1 mini-bar">
+                  <div data-strength-target="strengthBar" class="h-2 rounded-xl transition-colors bg-gray-200"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <button class="w-full px-4 py-2 text-white font-medium bg-appPurple hover:bg-appPurpleLight active:bg-appPurple rounded-lg duration-150" >

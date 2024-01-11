@@ -2,23 +2,19 @@ import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
 
 export default class extends Controller {
-  connect(): JQuery<Element> {
-    if (!localStorage.getItem('cookieConsent')) {
-      return $(this.element).show();
-    }
+	connect(): void {
+		!localStorage.getItem('cookieConsent') ? $(this.element).show() : $(this.element).hide();
+	}
 
-    return $(this.element).hide();
-  }
+	accept(): void {
+		localStorage.setItem('cookieConsent', 'accepted');
 
-  accept(): JQuery<Element> {
-    localStorage.setItem('cookieConsent', 'accepted');
+		$(this.element).hide();
+	}
 
-    return $(this.element).hide();
-  }
+	decline(): void {
+		localStorage.setItem('cookieConsent', 'declined');
 
-  decline(): JQuery<Element> {
-    localStorage.setItem('cookieConsent', 'declined');
-
-    return $(this.element).hide();
-  }
+		$(this.element).hide();
+	}
 }
