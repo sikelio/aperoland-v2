@@ -8,11 +8,11 @@ import type { SweetAlertResult } from 'sweetalert2';
 import CustomSweetAlert from '../lib/CustomSweetAlert';
 
 export default class extends Controller {
-  public updateUsernameMail(e: Event) {
+  public updateUsernameMail(e: Event): void {
     e.preventDefault();
   }
 
-  public async updatePassword(e: Event) {
+  public async updatePassword(e: Event): Promise<SweetAlertResult<any>> {
     e.preventDefault();
 
     const password = $(e.currentTarget as HTMLElement).find('[name="password"]').val();

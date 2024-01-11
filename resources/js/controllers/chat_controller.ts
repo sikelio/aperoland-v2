@@ -18,7 +18,7 @@ export default class extends Controller {
 	private socket: Socket;
 	private isConnected: boolean;
 
-	public async connect() {
+	public async connect(): Promise<void> {
 		const token: string | null = localStorage.getItem('chatToken');
 
 		this.currentUserId = Number($(this.element).attr('data-user') as string);
@@ -69,7 +69,7 @@ export default class extends Controller {
 		return $(this.inputTarget).val('');
 	}
 
-	private addMessage(msg: MessagePackage) {
+	private addMessage(msg: MessagePackage): void {
 		const isAuthor: boolean = msg.authorUserId == this.currentUserId;
 
 		const item: JQuery<HTMLElement> = $('<div>').addClass(`mb-2 ${isAuthor ? 'text-right' : ''}`);

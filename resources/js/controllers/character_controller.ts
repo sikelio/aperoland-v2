@@ -6,33 +6,24 @@ export default class extends Controller {
 
 	declare readonly outputTarget: HTMLElement;
 
-	connect(): JQuery<Element> {
-		const maxLength: string | 255 =
-			$(this.element).find('[name="description"]').attr('maxLength') || 255;
-		const currentLength: number = ($(this.element).find('[name="description"]').val() as string)
-			.length;
+	private readonly maxLength: number = 255;
 
-		if (currentLength > 255 || currentLength < 0) {
-			$(this.outputTarget).removeClass('text-white').addClass('text-red-600');
-		} else {
-			$(this.outputTarget).removeClass('text-red-600').addClass('text-white');
-		}
-
-		return $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
+	public connect(): void {
+		this.update();
 	}
 
-	update(): JQuery<Element> {
-		const maxLength: string | 255 =
-			$(this.element).find('[name="description"]').attr('maxLength') || 255;
+	public update(): void {
 		const currentLength: number = ($(this.element).find('[name="description"]').val() as string)
 			.length;
 
-		if (currentLength > 255 || currentLength < 0) {
-			$(this.outputTarget).removeClass('text-white').addClass('text-red-600');
-		} else {
-			$(this.outputTarget).removeClass('text-red-600').addClass('text-white');
-		}
+		this.applyColor(currentLength);
 
-		return $(this.outputTarget).text(`${currentLength} / ${maxLength}`);
+		$(this.outputTarget).text(`${currentLength} / ${this.maxLength}`);
+	}
+
+	private applyColor(currentLength: number): void {
+		currentLength > 255 || currentLength < 0
+			? $(this.outputTarget).removeClass('text-white').addClass('text-red-600')
+			: $(this.outputTarget).removeClass('text-red-600').addClass('text-white');
 	}
 }

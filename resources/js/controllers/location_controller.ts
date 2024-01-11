@@ -6,7 +6,7 @@ export default class extends Controller {
 
 	declare readonly selectTarget: HTMLSelectElement;
 
-	public connect() {
+	public connect(): void {
 		new TomSelect(this.selectTarget, {
 			valueField: 'freeformAddress',
 			labelField: 'freeformAddress',

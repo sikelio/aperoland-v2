@@ -58,7 +58,7 @@ export default class extends Controller {
 		});
 	}
 
-	async removeAttendee(e: Event) {
+	async removeAttendee(e: Event): Promise<void> {
 		e.preventDefault();
 
 		const eventId: string = $(e.target as HTMLElement).attr('data-event') as string;

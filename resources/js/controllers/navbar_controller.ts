@@ -11,16 +11,16 @@ export default class extends Controller {
 	declare readonly menuTarget: HTMLElement;
 	declare readonly mobileMenuTarget: HTMLElement;
 
-	toggleAvatarDropdown(e: Event): JQuery<HTMLElement> {
+	toggleAvatarDropdown(e: Event): void {
 		e.preventDefault();
 
-		return $(this.menuTarget).toggleClass('hidden');
+		$(this.menuTarget).toggleClass('hidden');
 	}
 
-	toggleMobileAvatarDropdown(e: Event): JQuery<HTMLElement> {
+	toggleMobileAvatarDropdown(e: Event): void {
 		e.preventDefault();
 
-		return $(this.mobileMenuTarget).toggleClass('hidden');
+		$(this.mobileMenuTarget).toggleClass('hidden');
 	}
 
 	async logout(e: Event): Promise<'/auth/login' | SweetAlertResult<any>> {
