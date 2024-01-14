@@ -20,6 +20,8 @@ Route.group(() => {
 
     Route.put('/:id/edit', 'AppController.editEvent');
 
+    Route.put('/:id/edit/code', 'AppController.changeEventCode');
+
     Route.delete('/:id/remove-attendee', 'AppController.deleteAttendeeFromEvent').as('app.remove.attendee.delete');
   }).prefix('/event');
 })

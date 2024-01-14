@@ -511,4 +511,34 @@ export default class AppController {
       });
     }
   }
+
+  public async changeEventCode({ params, response, auth }: HttpContextContract) {
+    const eventId = params.id;
+
+    try {
+      const event = await Event.findOrFail(eventId);
+      event.setTempUserId(auth.user!.id);
+
+      if (event.isCreator) {
+        return response.status(403).send({
+          message: 'Vous n\'êtes pas le créateur de cet Apéro'
+        });
+      }
+
+      let newCode = RandomGenerator.generateJoinCode();
+
+      event.joinCode = newCode;
+      await event.save();
+
+      return response.send({
+        message: 'Le code d\'invitation a bien été modifié',
+        code: newCode
+      });
+    } catch (error: any) {
+      return response.status(500).send({
+        message: 'Quelque chose s\'est mal passé !',
+        success: false
+      });
+    }
+  }
 }

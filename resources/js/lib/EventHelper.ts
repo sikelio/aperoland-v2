@@ -9,7 +9,7 @@ export default class EventHelper {
 
   public static getEventIdByRegex(): string {
     const regex = /\d+/gm;
-    const str = `/app/event/2/edit`;
+    const str = window.location.pathname;
     const result = regex.exec(str);
 
     return result![0];
