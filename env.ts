@@ -30,4 +30,6 @@ export default Env.rules({
 	MYSQL_DB_NAME: Env.schema.string(),
 	JWT_SECRET: Env.schema.string(),
 	TOMTOM_API_KEY: Env.schema.string(),
+  SPOTIFY_CLIENT_ID: Env.schema.string(),
+  SPOTIFY_CLIENT_SECRET: Env.schema.string(),
 });
