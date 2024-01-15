@@ -45,10 +45,14 @@ Encore.setPublicPath('/assets');
 | entrypoints.
 |
 */
-Encore.addEntry('app', './resources/js/app.ts')
+Encore
+  .addEntry('app', './resources/js/app.ts')
 	.enableTypeScriptLoader((tsConfig) => {
-		tsConfig.configFile = resolve(__dirname, './resources/js/tsconfig.json');
+		tsConfig.configFile = 'tsconfig.stimulus.json';
 	})
+  .addAliases({
+    '@': join(__dirname, 'resources/js')
+  })
 	.enableForkedTypeScriptTypesChecking();
 
 /*
