@@ -10,7 +10,7 @@ export default class SpotifyController {
   public async redirect({ response }: HttpContextContract) {
     const clientId: string = Env.get('SPOTIFY_CLIENT_ID');
     const redirectUri: string = `http://localhost:${Env.get('PORT')}/auth/spotify/callback`;
-    const scopes: string = 'user-read-private user-read-email';
+    const scopes: string = 'user-read-private user-read-email playlist-modify-public';
     const state = RandomGenerator.generateState(16);
 
     const spotifyUrl: string = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;

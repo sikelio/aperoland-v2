@@ -1,6 +1,8 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Env from '@ioc:Adonis/Core/Env';
 import User from 'App/Models/User';
+import Event from 'App/Models/Event';
+import Playlist from 'App/Models/Playlist';
 import spotify from 'App/Services/SpotifyApi';
 import axios from 'axios';
 
@@ -32,6 +34,45 @@ export default class ApiController {
 				response.send([]);
 			});
 	}
+
+  public async createPlaylist({ request, params, response, auth }: HttpContextContract) {
+    try {
+      const playlistName: string = request.input('playlistName');
+      const user: User = await User.findOrFail(auth.user!.id);
+      const event: Event = await Event.findOrFail(params.id);
+      event.setTempUserId(user.id);
+
+      if (!event.isCreator) {
+        return response.status(403).send({
+          message: 'Vous n\'êtes pas le créateur de cet Apéro',
+          success: false
+        });
+      }
+
+      spotify.setAccessToken(user.spotifyAccessToken);
+      spotify.setRefreshToken(user.spotifyRefreshToken);
+      spotify.createPlaylist(playlistName, { public: true })
+        .then(async (data) => {
+          await Playlist.create({
+            playlistName: playlistName,
+            spotifyPlaylistId: data.body.id,
+            eventId: event.id
+          });
+
+          return response.send({
+            message: 'Playlist créée',
+            success: true
+          });
+        }, () => {
+          return response.status(500).send({
+            message: 'Une erreur s\'est produite',
+            success: false
+          });
+        });
+    } catch (error: any) {
+      return
+    }
+  }
 
   public async songSearch({ request, auth, response }: HttpContextContract) {
     let queryString = request.qs();

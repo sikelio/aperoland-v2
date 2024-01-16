@@ -1,13 +1,16 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
+import { HasManyQueryBuilderContract, RelationQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm';
 import Event from 'App/Models/Event';
 import User from 'App/Models/User';
+import RandomGenerator from 'App/Utility/RandomGenerator';
 
 import ValidationRule from 'App/Interfaces/ValidationRule';
 import ValidationRules from 'App/Enums/ValidationRules';
 import ValidationMessages from 'App/Enums/ValidationMessages';
 
-import RandomGenerator from 'App/Utility/RandomGenerator';
+import type ChatMessage from 'App/Models/ChatMessage';
+import type Playlist from 'App/Models/Playlist';
 
 export default class AppController {
 	public async getHome({ view, auth }: HttpContextContract) {
@@ -374,11 +377,12 @@ export default class AppController {
 		try {
 			const event = await Event.findOrFail(params.id);
 			await event.load('attendees');
-			await event.load('messages', (messagesQuery) => messagesQuery.preload('user'));
+      await event.load('messages', (messagesQuery: HasManyQueryBuilderContract<typeof ChatMessage, any>) => messagesQuery.preload('user'));
+      await event.load('playlist', (playlistQuery: RelationQueryBuilderContract<typeof Playlist, any>) => playlistQuery.preload('songs'));
 
 			event.setTempUserId(auth.user!.id);
-			event.messages.forEach((message) => message.setTempUserId(auth.user!.id));
-			event.attendees.forEach((attendee) => {
+			event.messages.forEach((message: ChatMessage) => message.setTempUserId(auth.user!.id));
+			event.attendees.forEach((attendee: User) => {
 				attendee.setTempUserId(auth.user!.id);
 				attendee.setTempCreatorUserId(event.creatorId);
 			});

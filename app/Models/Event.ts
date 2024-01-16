@@ -3,16 +3,19 @@ import {
 	BaseModel,
 	BelongsTo,
 	HasMany,
+	HasOne,
 	ManyToMany,
 	belongsTo,
 	column,
 	computed,
 	hasMany,
+	hasOne,
 	manyToMany,
 } from '@ioc:Adonis/Lucid/Orm';
 
 import User from './User';
 import ChatMessage from './ChatMessage';
+import Playlist from './Playlist';
 
 export default class Event extends BaseModel {
 	@column({ columnName: 'event_id', isPrimary: true })
@@ -61,6 +64,9 @@ export default class Event extends BaseModel {
 
 	@hasMany(() => ChatMessage)
 	public messages: HasMany<typeof ChatMessage>;
+
+  @hasOne(() => Playlist)
+  public playlist: HasOne<typeof Playlist>;
 
 	private tempUserId: number;
   private tempStart: string;
