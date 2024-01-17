@@ -11,7 +11,6 @@
 	border: none !important;
 	font-size: 100% !important;
 	margin-top: 1px;
-	/* padding: 8px 8px 6px !important; */
 }
 
 .ts-control input {
@@ -30,4 +29,25 @@
 
 .ts-dropdown .option {
 	padding: 0.5rem !important;
+}
+
+.ts-wrapper.multi .ts-control [data-value] {
+  background-image: unset !important;
+  box-shadow: unset !important;
+}
+
+.ts-wrapper.multi .ts-control > div {
+  background: unset !important;
+  border: unset !important;
+}
+
+.ts-wrapper.multi .ts-control [data-value].active {
+  background-color: #F65C06 !important;
+  background-image: unset !important;
+  background-repeat: unset !important;
+}
+
+.ts-wrapper.multi .ts-control > div.active {
+  background: unset !important;
+  border: unset !important;
 }

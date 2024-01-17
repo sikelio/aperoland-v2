@@ -33,6 +33,12 @@ export default class User extends BaseModel {
 	@column({ columnName: 'password', serializeAs: null })
 	public password: string;
 
+  @column({ columnName: 'spotify_access_token' })
+  public spotifyAccessToken: string;
+
+  @column({ columnName: 'spotify_refresh_token' })
+  public spotifyRefreshToken: string;
+
 	@column.dateTime({ autoCreate: true })
 	public createdAt: DateTime;
 

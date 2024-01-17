@@ -27,13 +27,36 @@
           <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="2">Chat</button>
         </li>
 
-        <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
-          <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="3" @unless(event.address) disabled @end>Localisation</button>
-        </li>
+        @if(event.address)
+          <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
+            <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="3">Localisation</button>
+          </li>
+        @else
+          <li data-event-target="tab" class="py-2 text-gray-500">
+            <button class="py-2.5 px-4 rounded-lg duration-150 text-sm font-medium" data-action="event#changeTab" disabled data-index="3">Localisation</button>
+          </li>
+        @end
+
+        @if(event.playlist)
+          <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
+            <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="4">Playlist</button>
+          </li>
+        @else
+          @if(event.isCreator)
+            <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
+              <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="4">Playlist</button>
+            </li>
+          @else
+            <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
+              <button class="py-2.5 px-4 rounded-lg duration-150 text-sm font-medium" data-action="event#changeTab" disabled data-index="4">Playlist</button>
+            </li>
+          @end
+        @end
+
 
         @if(event.isCreator)
           <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
-            <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="4">Paramètres</button>
+            <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="5">Paramètres</button>
           </li>
         @end
       </ul>
@@ -50,7 +73,7 @@
 
           @if(event.isCreator)
             <div class="mt-3 md:mt-0">
-              <button class="inline-block px-4 py-2 text-white duration-150 font-medium bg-appBlueDark rounded-lg hover:bg-appBlueDarkLight active:bg-appBlueDark md:text-sm" data-action="click->event#copyJoinCode" data-code="{{ event.joinCode }}">
+              <button data-event-target="code" class="inline-block px-4 py-2 text-white duration-150 font-medium bg-appBlueDark rounded-lg hover:bg-appBlueDarkLight active:bg-appBlueDark md:text-sm" data-action="click->event#copyJoinCode" data-code="{{ event.joinCode }}">
                 Copier le code d'invitation
               </button>
             </div>
@@ -128,6 +151,7 @@
 
         <form id="chatForm" class="p-4 flex" data-action="submit->chat#sendMessage">
           <input data-chat-target="input" autocomplete="off" type="text" placeholder="Type a message" class="w-full px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+
           <button id="send-button" class="bg-appYellow text-white px-4 py-2 rounded-r-md hover:bg-appYellowLight transition duration-300">Send</button>
         </form>
       </div>
@@ -136,8 +160,76 @@
         <div data-target="leaflet.map" id="map" class="mt-4 h-[550px]"></div>
       </div>
 
-      <div data-event-target="content" class="tab-content">
+      <div data-controller="spotify" data-event-target="content" class="tab-content">
+        @unless(event.playlist)
+          @if(event.isCreator)
+            <form class="p-4 flex flex-col" data-action="submit->spotify#createPlaylist">
+              <input data-spotify-target="playlistname" autocomplete="off" type="text" placeholder="Nom de la playlist" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
 
+              <button type="submit" id="send-button" class="bg-appYellow mt-4 text-white px-4 py-2 rounded-md w-full hover:bg-appYellowLight transition duration-300">Créer playlist Spotify</button>
+            </form>
+          @end
+        @else
+          <form data-action="submit->spotify#addSong" class="mt-4 grid">
+            <label class="font-bold text-white">Ajouter des titres</label>
+            <input data-target="spotify.songsearch" name="songs" class="w-full mt-2 px-1 py-0.5 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white">
+
+            <button type="submit" class="mt-4 rounded-md bg-appPurple py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-appPurpleLight focus-visible:outline focus-within:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Ajouter</button>
+          </form>
+
+          <ul class="mt-4 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" data-target="spotify.songlist">
+            @if(event.playlist.songs)
+              @each(song in event.playlist.songs)
+                <li class="border rounded-lg">
+                  <div class="flex items-start justify-between p-4">
+                    <div class="flex">
+                      <img src="{{ song.spotifyImageUrl }}" width="64" />
+
+                      <div class="ml-2 flex flex-col justify-center">
+                        <h4 class="text-white font-semibold">
+                          {{ song.title }}
+                        </h4>
+
+                        <p class="text-white text-sm">
+                          {{ song.artist }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-4 flex items-center justify-center border-t">
+                    @if(song.hasPreviewLink)
+                      <div class="audio-player w-full">
+                        <audio src="{{ song.spotifyPreviewUrl }}" data-target="spotify.audio"></audio>
+
+                        <div class="controls">
+                          <button class="player-button" data-target="spotify.playbtn" data-action="click->spotify#toggleAudio">
+                            <i class="fa-solid fa-play text-white" data-target="spotify.playicon"></i>
+                            <i class="fa-solid fa-pause text-white hidden" data-target="spotify.pauseicon"></i>
+                          </button>
+
+                          <input type="range" class="timeline" max="100" value="0" data-target="spotify.timeline">
+
+                          <button class="sound-button" data-target="spotify.soundbtn" data-action="click->spotify#toggleVolume">
+                            <i class="fa-solid fa-volume-high text-white" data-target="spotify.volumeicon"></i>
+                            <i class="fa-solid fa-volume-xmark text-white hidden" data-target="spotify.volumedownicon"></i>
+                          </button>
+                        </div>
+                      </div>
+                    @else
+                      <span class="text-white">Pas de preview possible</span>
+                    @end
+                  </div>
+                </li>
+              @end
+            @else
+              Pas encore de titres
+            @end
+          </ul>
+        @end
+      </div>
+
+      <div data-event-target="content" class="tab-content">
         <div class="mx-auto max-w-7xl">
           <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 border-b-[1px] border-white/5">
             <div>
@@ -150,10 +242,28 @@
 
             <div class="md:col-span-2">
               <div class="mt-8 flex">
-                <a href="{{ route('app.edit.event.get', { id: event.id }) }}" class="rounded-md bg-indigo-500 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-within:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                <a href="{{ route('app.edit.event.get', { id: event.id }) }}" class="rounded-md bg-appPurple py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-appPurpleLight focus-visible:outline focus-within:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                   Changer les informations de l'Apéro
                 </a>
               </div>
+            </div>
+          </div>
+
+          <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 border-b-[1px] border-white/5">
+            <div>
+              <h2 class="text-base font-semibold leading-7 text-white">Changer le code d'invitation</h2>
+
+              <p class="mt-1 text-sm leading-6 text-white">
+                Permet de changer le code d'invitation, si par exemple votre code à fuité.
+              </p>
+            </div>
+
+            <div class="md:col-span-2">
+              <form class="mt-8 flex" data-action="submit->event#changeCode">
+                <button class="rounded-md bg-appPurple py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-appPurpleLight focus-visible:outline focus-within:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                  Changer le code d'invitation
+                </button>
+              </form>
             </div>
           </div>
 
@@ -173,7 +283,6 @@
             </form>
           </div>
         </div>
-
       </div>
     </div>
   </div>

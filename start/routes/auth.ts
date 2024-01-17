@@ -10,6 +10,10 @@ Route.group(() => {
 	Route.post('/register', 'AuthController.postRegister').as('auth.register.post');
 
 	Route.post('/logout', 'AuthController.logout').as('auth.logout.post');
-})
-	.prefix('/auth')
-	.middleware('redirectIfAuthenticated');
+
+  Route.group(() => {
+    Route.get('/', 'SpotifyController.redirect');
+
+    Route.get('/callback', 'SpotifyController.callback');
+  }).prefix('/spotify');
+}).prefix('/auth').middleware('redirectIfAuthenticated');

@@ -10,8 +10,10 @@ import type { SweetAlertResult } from 'sweetalert2';
 import type { AxiosResponse } from 'axios';
 
 export default class extends Controller {
-	static targets: string[] = ['tab', 'content'];
+	static targets: string[] = ['tab', 'content', 'code'];
 	static values = { activeTab: Number };
+
+  declare readonly codeTarget: HTMLElement;
 
 	declare readonly tabTargets: HTMLElement[];
 	declare readonly contentTargets: HTMLElement[];
@@ -20,14 +22,14 @@ export default class extends Controller {
 	declare mapEvent: CustomEvent<unknown>;
 	declare chatEvent: CustomEvent<unknown>;
 
-	connect(): void {
+	public connect(): void {
 		this.mapEvent = new CustomEvent('mapReload');
     this.chatEvent = new CustomEvent('chatScroll');
 
 		this.updateTabDisplay();
 	}
 
-	changeTab(e: Event): void {
+	public changeTab(e: Event): void {
 		const index: string | undefined = $(e.currentTarget as HTMLElement).attr('data-index');
 
 		if (index) {
@@ -45,7 +47,7 @@ export default class extends Controller {
     }
 	}
 
-	updateTabDisplay(): void {
+	public updateTabDisplay(): void {
 		this.tabTargets.forEach((tab: HTMLElement, index: number): void => {
 			const isActive: boolean = index === this.activeTabValue;
 
@@ -60,7 +62,7 @@ export default class extends Controller {
 		});
 	}
 
-	async removeAttendee(e: Event): Promise<void> {
+	public async removeAttendee(e: Event): Promise<void> {
 		e.preventDefault();
 
 		const eventId: string = EventHelper.getEventId();
@@ -99,7 +101,7 @@ export default class extends Controller {
 		});
 	}
 
-	copyJoinCode(e: Event): Promise<SweetAlertResult<any>> {
+	public copyJoinCode(e: Event): Promise<SweetAlertResult<any>> {
 		navigator.clipboard.writeText($(e.target as HTMLElement).attr('data-code') as string);
 
 		return CustomSweetAlert.Toast.fire({
@@ -108,7 +110,7 @@ export default class extends Controller {
 		});
 	}
 
-  async deleteEvent(e: Event): Promise<void> {
+  public async deleteEvent(e: Event): Promise<void> {
     e.preventDefault();
 
     Swal.fire({
@@ -136,5 +138,27 @@ export default class extends Controller {
 				}
       }
     });
+  }
+
+  public async changeCode(e: Event) {
+    e.preventDefault();
+
+    const eventId: string = EventHelper.getEventIdByRegex();
+
+    try {
+      const response = await RequestHandler.put(`/app/event/${eventId}/edit/code`);
+
+      $(this.codeTarget).attr('data-code', response.data.code);
+
+      return CustomSweetAlert.Toast.fire({
+        icon: 'success',
+        text: 'Le code d\'invitation à bien été modifié'
+      });
+    } catch (error: any) {
+      return CustomSweetAlert.Toast.fire({
+        icon: 'error',
+        title: error.response.data.message
+      });
+    }
   }
 }

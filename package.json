@@ -58,6 +58,7 @@
 		"@types/leaflet": "^1.9.8",
 		"@types/proxy-addr": "^2.0.3",
 		"@types/source-map-support": "^0.5.10",
+		"@types/spotify-web-api-node": "^5.0.11",
 		"@types/zxcvbn": "^4.4.4",
 		"adonis-preset-ts": "^2.1.0",
 		"autoprefixer": "^10.4.16",
@@ -99,6 +100,7 @@
 		"proxy-addr": "^2.0.7",
 		"reflect-metadata": "^0.1.13",
 		"socket.io": "^4.7.2",
-		"source-map-support": "^0.5.21"
+		"source-map-support": "^0.5.21",
+		"spotify-web-api-node": "^5.0.2"
 	}
 }

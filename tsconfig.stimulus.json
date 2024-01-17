@@ -1,0 +1,30 @@
+{
+	"include": ["./resources/js/**/*"],
+	"exclude": [
+		"app",
+		"start",
+		"database",
+		"tests",
+		"providers",
+		"contacts",
+		"config",
+		"config",
+		"build"
+	],
+	"compilerOptions": {
+		"lib": ["dom", "dom.iterable", "ES2016", "scripthost"],
+		"outDir": "build",
+		"rootDir": "./",
+		"sourceMap": true,
+		"moduleResolution": "node",
+		"noUnusedLocals": true,
+		"strict": true,
+		"target": "ES2017",
+		"removeComments": true,
+		"baseUrl": ".",
+		"noEmit": false
+	},
+	"paths": {
+		"@/*": ["./resources/js/"]
+	}
+}
