@@ -6,6 +6,8 @@ Route.group(() => {
   Route.group(() => {
     Route.post('/event/:id/create-playlist', 'ApiController.createPlaylist');
 
-    Route.get('/search', 'ApiController.songSearch');
+    Route.post('/event/:id/add-song', 'ApiController.addSong');
+
+    Route.get('/search-songs', 'ApiController.songSearch');
   }).prefix('/spotify');
 }).prefix('/api').middleware('apiAuth');

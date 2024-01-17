@@ -33,6 +33,14 @@ export default class extends BaseSchema {
         .onDelete('CASCADE');
 
       table
+        .string('spotify_preview_url', 255)
+        .nullable();
+
+      table
+        .string('spotify_image_url', 255)
+        .nullable();
+
+      table
         .timestamp('created_at', { useTz: true });
 
       table

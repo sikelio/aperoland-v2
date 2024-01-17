@@ -20,29 +20,35 @@ export default class SpotifyController {
 
 
   public async callback({ response, request, auth }: HttpContextContract) {
-    const code: string = request.input('code');
-    const clientId: string = Env.get('SPOTIFY_CLIENT_ID');
-    const clientSecret: string = Env.get('SPOTIFY_CLIENT_SECRET');
-    const redirectUri: string = `http://localhost:${Env.get('PORT')}/auth/spotify/callback`;
+    try {
+      await auth.use('web').authenticate();
 
-    const responseToken: AxiosResponse<any, any> = await axios({
-      method: 'post',
-      url: 'https://accounts.spotify.com/api/token',
-      data: `grant_type=authorization_code&code=${code}&redirect_uri=${encodeURIComponent(redirectUri)}`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
-      }
-    });
+      const code: string = request.input('code');
+      const clientId: string = Env.get('SPOTIFY_CLIENT_ID');
+      const clientSecret: string = Env.get('SPOTIFY_CLIENT_SECRET');
+      const redirectUri: string = `http://localhost:${Env.get('PORT')}/auth/spotify/callback`;
 
-    const accessToken: string = responseToken.data.access_token;
-    const refreshToken: string = responseToken.data.refresh_token;
+      const responseToken: AxiosResponse<any, any> = await axios({
+        method: 'post',
+        url: 'https://accounts.spotify.com/api/token',
+        data: `grant_type=authorization_code&code=${code}&redirect_uri=${encodeURIComponent(redirectUri)}`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
+        }
+      });
 
-    const user = await User.find(auth.user!.id);
-    user!.spotifyAccessToken = accessToken;
-    user!.spotifyRefreshToken = refreshToken;
-    await user!.save();
+      const accessToken: string = responseToken.data.access_token;
+      const refreshToken: string = responseToken.data.refresh_token;
 
-    return response.redirect('/app/home');
+      const user = await User.find(auth.user!.id);
+      user!.spotifyAccessToken = accessToken;
+      user!.spotifyRefreshToken = refreshToken;
+      await user!.save();
+
+      return response.redirect('/app/home');
+    } catch (error: any) {
+      return response.status(301).redirect().toRoute('app.login.get');
+    }
   }
 }

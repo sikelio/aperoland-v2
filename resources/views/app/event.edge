@@ -170,26 +170,55 @@
             </form>
           @end
         @else
-          <ul class="mt-4 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <form data-action="submit->spotify#addSong" class="mt-4 grid">
+            <label class="font-bold text-white">Ajouter des titres</label>
+            <input data-target="spotify.songsearch" name="songs" class="w-full mt-2 px-1 py-0.5 bg-transparent outline-none border focus:border-appBlueDark-600 shadow-sm rounded-lg text-white">
+
+            <button type="submit" class="mt-4 rounded-md bg-appPurple py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-appPurpleLight focus-visible:outline focus-within:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Ajouter</button>
+          </form>
+
+          <ul class="mt-4 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" data-target="spotify.songlist">
             @if(event.playlist.songs)
               @each(song in event.playlist.songs)
                 <li class="border rounded-lg">
                   <div class="flex items-start justify-between p-4">
-                    <div class="space-y-2">
-                      <img src="" />
+                    <div class="flex">
+                      <img src="{{ song.spotifyImageUrl }}" width="64" />
 
-                      <h4 class="text-gray-800 font-semibold">
-                        {{ song.title }}
-                      </h4>
+                      <div class="ml-2 flex flex-col justify-center">
+                        <h4 class="text-white font-semibold">
+                          {{ song.title }}
+                        </h4>
 
-                      <p class="text-gray-600 text-sm">
-                        {{ song.artist }}
-                      </p>
+                        <p class="text-white text-sm">
+                          {{ song.artist }}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="py-5 px-4 border-t text-right">
-                    <audio class="w-full" controls src=""></audio>
+                  <div class="p-4 flex items-center justify-center border-t">
+                    @if(song.hasPreviewLink)
+                      <div class="audio-player w-full">
+                        <audio src="{{ song.spotifyPreviewUrl }}" data-target="spotify.audio"></audio>
+
+                        <div class="controls">
+                          <button class="player-button" data-target="spotify.playbtn" data-action="click->spotify#toggleAudio">
+                            <i class="fa-solid fa-play text-white" data-target="spotify.playicon"></i>
+                            <i class="fa-solid fa-pause text-white hidden" data-target="spotify.pauseicon"></i>
+                          </button>
+
+                          <input type="range" class="timeline" max="100" value="0" data-target="spotify.timeline">
+
+                          <button class="sound-button" data-target="spotify.soundbtn" data-action="click->spotify#toggleVolume">
+                            <i class="fa-solid fa-volume-high text-white" data-target="spotify.volumeicon"></i>
+                            <i class="fa-solid fa-volume-xmark text-white hidden" data-target="spotify.volumedownicon"></i>
+                          </button>
+                        </div>
+                      </div>
+                    @else
+                      <span class="text-white">Pas de preview possible</span>
+                    @end
                   </div>
                 </li>
               @end

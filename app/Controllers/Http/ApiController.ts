@@ -4,9 +4,11 @@ import User from 'App/Models/User';
 import Event from 'App/Models/Event';
 import Playlist from 'App/Models/Playlist';
 import spotify from 'App/Services/SpotifyApi';
+import Track from 'App/Interfaces/Track';
 import axios from 'axios';
 
 import type { AxiosResponse } from 'axios';
+import Song from 'App/Models/Song';
 
 export default class ApiController {
 	public async location({ request, response }: HttpContextContract) {
@@ -51,26 +53,20 @@ export default class ApiController {
 
       spotify.setAccessToken(user.spotifyAccessToken);
       spotify.setRefreshToken(user.spotifyRefreshToken);
-      spotify.createPlaylist(playlistName, { public: true })
-        .then(async (data) => {
-          await Playlist.create({
-            playlistName: playlistName,
-            spotifyPlaylistId: data.body.id,
-            eventId: event.id
-          });
+      const res = await spotify.createPlaylist(playlistName, { public: true })
 
-          return response.send({
-            message: 'Playlist créée',
-            success: true
-          });
-        }, () => {
-          return response.status(500).send({
-            message: 'Une erreur s\'est produite',
-            success: false
-          });
-        });
+      await Playlist.create({
+        playlistName: playlistName,
+        spotifyPlaylistId: res.body.id,
+        eventId: event.id
+      });
+
+      return response.send({
+        message: 'Playlist créée',
+        success: true
+      });
     } catch (error: any) {
-      return
+      return response.status(500);
     }
   }
 
@@ -82,22 +78,62 @@ export default class ApiController {
 
       spotify.setAccessToken(user.spotifyAccessToken);
       spotify.setRefreshToken(user.spotifyRefreshToken);
-      spotify.searchTracks(queryString.q)
-        .then((data) => {
-          if (data.body === undefined) {
-            return [];
-          }
 
-          if (data.body.tracks === undefined) {
-            return [];
-          }
+      const data = await spotify.searchTracks(queryString.q);
 
-          return response.send(data.body.tracks.items);
-        }, (err) => {
-          return response.status(err.statusCode).send([]);
-        });
+      if (data.body === undefined) {
+        return response.status(500).send([]);
+      }
+
+      if (data.body.tracks === undefined) {
+        return response.status(500).send([]);
+      }
+
+      return response.send(data.body.tracks.items);
     } catch (error: any) {
       return response.status(500).send([]);
+    }
+  }
+
+  public async addSong({ params, response, auth, request }: HttpContextContract) {
+    const eventId = params.id;
+
+    try {
+      const user: User = await auth.use('web').authenticate();
+
+      const event = await Event.findOrFail(eventId);
+      await event.load('playlist');
+
+      const tracks: Track[] = request.input('songs');
+      const songs: string[] = [];
+      const finalSongs: any[] = [];
+
+      tracks.forEach((track: Track) => {
+        songs.push(track.songId);
+        finalSongs.push({
+          title: track.title,
+          artist: track.artist,
+          spotifyPreviewUrl: track.previewUrl,
+          spotifyImageUrl: track.imageUrl,
+          playlistId: event.playlist.id,
+        });
+      });
+
+      spotify.setAccessToken(user.spotifyAccessToken);
+      spotify.setRedirectURI(user.spotifyRefreshToken);
+      await spotify.addTracksToPlaylist(event.playlist.spotifyPlaylistId, songs);
+
+      await Song.createMany(finalSongs);
+
+      return response.send({
+        message: 'Titre(s) ajouté avec succès',
+        success: true,
+        songs: finalSongs
+      });
+    } catch (error: any) {
+      console.log(error);
+
+      return response.status(500).send({});
     }
   }
 }
