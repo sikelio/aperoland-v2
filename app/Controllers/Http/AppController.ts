@@ -340,7 +340,7 @@ export default class AppController {
 			const user = await User.findOrFail(auth.user!.id);
 			await user.related('events').attach([event!.id]);
 
-			return response.send(event);
+			return response.send(event.id);
 		} catch (error: any) {
 			if (error === 'Exception: E_ROW_NOT_FOUND: Row not found') {
 				return response.status(404).send({

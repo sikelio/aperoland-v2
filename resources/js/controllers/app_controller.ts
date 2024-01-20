@@ -120,7 +120,7 @@ export default class extends Controller {
 		});
 	}
 
-	async joinEvent(e: Event): Promise<SweetAlertResult<any> | '/app/home'> {
+	async joinEvent(e: Event): Promise<string | SweetAlertResult<any>> {
 		e.preventDefault();
 
 		const joinCode: string = $(e.currentTarget as HTMLElement)
@@ -128,14 +128,17 @@ export default class extends Controller {
 			.val() as string;
 
 		try {
-			await RequestHandler.post('/app/join-event', { joinCode });
+			const response = await RequestHandler.post('/app/join-event', { joinCode });
 
 			CustomSweetAlert.Toast.fire({
 				icon: 'success',
 				text: 'Code valide',
 			});
 
-			return (location.href = '/app/home');
+      console.log(response.data);
+
+
+			return (location.href = `/app/event/${response.data}`);
 		} catch (error: any) {
 			return CustomSweetAlert.Toast.fire({
 				icon: 'error',
