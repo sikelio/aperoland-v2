@@ -387,11 +387,6 @@ export default class AppController {
 				attendee.setTempCreatorUserId(event.creatorId);
 			});
 
-      event.playlist.songs.forEach((v) => {
-        console.log(v.spotifyPreviewUrl);
-
-      })
-
       event.lat = event.lat ? event.lat : 0;
       event.long = event.long ? event.long : 0;
 
