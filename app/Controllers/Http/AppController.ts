@@ -545,4 +545,30 @@ export default class AppController {
       });
     }
   }
+
+  public async leaveEvent({ auth, response, params }: HttpContextContract) {
+    const eventId: number = params.id;
+
+    try {
+      const user: User = await auth.use('web').authenticate();
+      const event: Event = await Event.findOrFail(eventId);
+      event.setTempUserId(user.id);
+
+      if (event.isCreator) {
+        return response.status(403).send({
+          message: 'Vous êtes le créateur de cet Apéro, vous ne pouvez pas quitter sauf si vous supprimer l\'Apéro',
+          success: false
+        });
+      }
+
+      await event.related('attendees').detach([user.id]);
+
+      return response.send({
+        message: 'Vous ne faites plus partie de l\'Apéro',
+        success: true
+      });
+    } catch (error: any) {
+      return response.status(500).send([]);
+    }
+  }
 }

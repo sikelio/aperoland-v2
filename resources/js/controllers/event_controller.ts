@@ -161,4 +161,21 @@ export default class extends Controller {
       });
     }
   }
+
+  public async leaveEvent(e: Event): Promise<SweetAlertResult<any> | string> {
+    e.preventDefault();
+
+    const eventId: string = EventHelper.getEventIdByRegex();
+
+    try {
+      await RequestHandler.post(`/app/event/${eventId}/leave`);
+
+      return location.href = '/app/home';
+    } catch (error: any) {
+      return CustomSweetAlert.Toast.fire({
+        icon: 'error',
+        title: error.response.data.message || 'Erreur'
+      });
+    }
+  }
 }
