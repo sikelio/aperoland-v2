@@ -134,24 +134,36 @@
       </div>
 
       <div data-controller="chat" data-event-target="content" class="tab-content" data-user="{{ userId }}">
-        <div id="chatbox" class="p-4 overflow-y-auto max-h-[500px]" data-chat-target="messages">
-          @each(message in event.messages)
-            <div class="mb-2">
-              <div class="{{ message.isAuthor ? 'text-right' : 'text-left' }}">
-                <span class="text-sm text-white">
-                  @unless(message.user)
-                    Utilisateur supprimé
-                  @else
-                    {{ message.user.username }}
-                  @end
-                </span>
-              </div>
-              <div class="{{ message.isAuthor ? 'text-right' : '' }}">
-                <p class="{{ message.isAuthor ? 'bg-appYellow text-white' : 'bg-gray-200 text-gray-700' }}  rounded-lg py-2 px-4 inline-block">
-                  {{ message.message }}
-                </p>
-              </div>
+        <div id="chatbox" class="p-4 overflow-y-auto h-[500px]" data-chat-target="messages">
+          @if(noMessages)
+            <div class="flex, h-full flex justify-center items-center flex-col" data-target="chat.nomessage">
+              <h2 class="text-4xl text-white font-extrabold mx-auto md:text-5xl">
+                C'est vide par ici !
+              </h2>
+
+              <p class="max-w-2xl text-gray-400">
+                Soyez le premier à envoyer un message.
+              </p>
             </div>
+          @else
+            @each(message in event.messages)
+              <div class="mb-2">
+                <div class="{{ message.isAuthor ? 'text-right' : 'text-left' }}">
+                  <span class="text-sm text-white">
+                    @unless(message.user)
+                      Utilisateur supprimé
+                    @else
+                      {{ message.user.username }}
+                    @end
+                  </span>
+                </div>
+                <div class="{{ message.isAuthor ? 'text-right' : '' }}">
+                  <p class="{{ message.isAuthor ? 'bg-appYellow text-white' : 'bg-gray-200 text-gray-700' }}  rounded-lg py-2 px-4 inline-block">
+                    {{ message.message }}
+                  </p>
+                </div>
+              </div>
+            @end
           @end
         </div>
 

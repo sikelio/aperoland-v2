@@ -394,6 +394,7 @@ export default class AppController {
 				event,
 				title: event.eventName,
 				userId: auth.user!.id,
+        noMessages: event.messages.length === 0
 			});
 		} catch (error: any) {
 			response.redirect().toRoute('app.home.get');

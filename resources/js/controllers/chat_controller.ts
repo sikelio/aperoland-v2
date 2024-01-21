@@ -9,10 +9,13 @@ import type { MessagePackage } from '../interfaces/chatbox';
 import type { SweetAlertResult } from 'sweetalert2';
 
 export default class extends Controller {
-	static targets: string[] = ['messages', 'input'];
+	static targets: string[] = ['messages', 'input', 'chat', 'nomessage'];
 
 	declare readonly messagesTarget: HTMLElement;
 	declare readonly inputTarget: HTMLInputElement;
+  declare readonly nomessageTarget: HTMLDivElement;
+
+  declare readonly hasNomessageTarget: boolean;
 
 	declare currentUserId: number;
 
@@ -43,9 +46,7 @@ export default class extends Controller {
 		});
 	}
 
-	public sendMessage(
-		e: Event
-	): JQuery<HTMLInputElement> | Promise<SweetAlertResult<any>> | undefined {
+	public sendMessage(e: Event): JQuery<HTMLInputElement> | Promise<SweetAlertResult<any>> | undefined {
 		e.preventDefault();
 
 		if (!localStorage.getItem('chatToken') || this.isConnected === false) {
@@ -71,6 +72,10 @@ export default class extends Controller {
 	}
 
 	private addMessage(msg: MessagePackage): void {
+    if (this.hasNomessageTarget === true) {
+      $(this.nomessageTarget).remove();
+    }
+
 		const isAuthor: boolean = msg.authorUserId == this.currentUserId;
 
 		const item: JQuery<HTMLElement> = $('<div>').addClass(`mb-2 ${isAuthor ? 'text-right' : ''}`);
