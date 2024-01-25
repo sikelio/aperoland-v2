@@ -47,7 +47,7 @@
               <button class="py-2.5 px-4 rounded-lg duration-150 text-sm hover:text-appYellow hover:bg-gray-100 active:bg-gray-200 font-medium" data-action="event#changeTab" data-index="4">Playlist</button>
             </li>
           @else
-            <li data-event-target="tab" class="py-2 border-b-2 border-white text-gray-500">
+            <li data-event-target="tab" class="py-2 text-gray-500">
               <button class="py-2.5 px-4 rounded-lg duration-150 text-sm font-medium" data-action="event#changeTab" disabled data-index="4">Playlist</button>
             </li>
           @end
@@ -75,6 +75,12 @@
             <div class="mt-3 md:mt-0">
               <button data-event-target="code" class="inline-block px-4 py-2 text-white duration-150 font-medium bg-appBlueDark rounded-lg hover:bg-appBlueDarkLight active:bg-appBlueDark md:text-sm" data-action="click->event#copyJoinCode" data-code="{{ event.joinCode }}">
                 Copier le code d'invitation
+              </button>
+            </div>
+          @else
+            <div class="mt-3 md:mt-0">
+              <button data-target="event.leave" class="inline-block px-4 py-2 text-white duration-150 font-medium bg-appBlueDark rounded-lg hover:bg-appBlueDarkLight active:bg-appBlueDark md:text-sm" data-action="click->event#leaveEvent">
+                Quitter l'Apéro
               </button>
             </div>
           @end
@@ -128,24 +134,36 @@
       </div>
 
       <div data-controller="chat" data-event-target="content" class="tab-content" data-user="{{ userId }}">
-        <div id="chatbox" class="p-4 overflow-y-auto max-h-[500px]" data-chat-target="messages">
-          @each(message in event.messages)
-            <div class="mb-2">
-              <div class="{{ message.isAuthor ? 'text-right' : 'text-left' }}">
-                <span class="text-sm text-white">
-                  @unless(message.user)
-                    Utilisateur supprimé
-                  @else
-                    {{ message.user.username }}
-                  @end
-                </span>
-              </div>
-              <div class="{{ message.isAuthor ? 'text-right' : '' }}">
-                <p class="{{ message.isAuthor ? 'bg-appYellow text-white' : 'bg-gray-200 text-gray-700' }}  rounded-lg py-2 px-4 inline-block">
-                  {{ message.message }}
-                </p>
-              </div>
+        <div id="chatbox" class="p-4 overflow-y-auto h-[500px]" data-chat-target="messages">
+          @if(noMessages)
+            <div class="flex, h-full flex justify-center items-center flex-col" data-target="chat.nomessage">
+              <h2 class="text-4xl text-white font-extrabold mx-auto md:text-5xl">
+                C'est vide par ici !
+              </h2>
+
+              <p class="max-w-2xl text-gray-400">
+                Soyez le premier à envoyer un message.
+              </p>
             </div>
+          @else
+            @each(message in event.messages)
+              <div class="mb-2">
+                <div class="{{ message.isAuthor ? 'text-right' : 'text-left' }}">
+                  <span class="text-sm text-white">
+                    @unless(message.user)
+                      Utilisateur supprimé
+                    @else
+                      {{ message.user.username }}
+                    @end
+                  </span>
+                </div>
+                <div class="{{ message.isAuthor ? 'text-right' : '' }}">
+                  <p class="{{ message.isAuthor ? 'bg-appYellow text-white' : 'bg-gray-200 text-gray-700' }}  rounded-lg py-2 px-4 inline-block">
+                    {{ message.message }}
+                  </p>
+                </div>
+              </div>
+            @end
           @end
         </div>
 

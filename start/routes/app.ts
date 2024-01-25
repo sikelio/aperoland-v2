@@ -23,6 +23,8 @@ Route.group(() => {
     Route.put('/:id/edit/code', 'AppController.changeEventCode');
 
     Route.delete('/:id/remove-attendee', 'AppController.deleteAttendeeFromEvent').as('app.remove.attendee.delete');
+
+    Route.post('/:id/leave', 'AppController.leaveEvent');
   }).prefix('/event');
 })
 	.prefix('/app')

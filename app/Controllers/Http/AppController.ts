@@ -340,7 +340,7 @@ export default class AppController {
 			const user = await User.findOrFail(auth.user!.id);
 			await user.related('events').attach([event!.id]);
 
-			return response.send(event);
+			return response.send(event.id);
 		} catch (error: any) {
 			if (error === 'Exception: E_ROW_NOT_FOUND: Row not found') {
 				return response.status(404).send({
@@ -387,11 +387,6 @@ export default class AppController {
 				attendee.setTempCreatorUserId(event.creatorId);
 			});
 
-      event.playlist.songs.forEach((v) => {
-        console.log(v.spotifyPreviewUrl);
-
-      })
-
       event.lat = event.lat ? event.lat : 0;
       event.long = event.long ? event.long : 0;
 
@@ -399,6 +394,7 @@ export default class AppController {
 				event,
 				title: event.eventName,
 				userId: auth.user!.id,
+        noMessages: event.messages.length === 0
 			});
 		} catch (error: any) {
 			response.redirect().toRoute('app.home.get');
@@ -548,6 +544,32 @@ export default class AppController {
         message: 'Quelque chose s\'est mal passé !',
         success: false
       });
+    }
+  }
+
+  public async leaveEvent({ auth, response, params }: HttpContextContract) {
+    const eventId: number = params.id;
+
+    try {
+      const user: User = await auth.use('web').authenticate();
+      const event: Event = await Event.findOrFail(eventId);
+      event.setTempUserId(user.id);
+
+      if (event.isCreator) {
+        return response.status(403).send({
+          message: 'Vous êtes le créateur de cet Apéro, vous ne pouvez pas quitter sauf si vous supprimer l\'Apéro',
+          success: false
+        });
+      }
+
+      await event.related('attendees').detach([user.id]);
+
+      return response.send({
+        message: 'Vous ne faites plus partie de l\'Apéro',
+        success: true
+      });
+    } catch (error: any) {
+      return response.status(500).send([]);
     }
   }
 }
